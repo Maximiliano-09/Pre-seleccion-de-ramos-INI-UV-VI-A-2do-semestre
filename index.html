@@ -1,0 +1,1390 @@
+<!doctype html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Toma de Ramos · Ing. en Negocios Internacionales UV</title>
+<style>
+  :root{
+    --bg:#f4f6fb; --panel:#ffffff; --ink:#1c2433; --muted:#5b6678;
+    --line:#e2e7f0; --accent:#1f4bd8; --accent-d:#123a9e; --accent-soft:rgba(31,75,216,.12);
+    --ok:#177245; --ok-soft:#e5f5ec; --warn:#b26a00; --warn-soft:#fff4e0;
+    --bad:#c02626; --bad-soft:#fde7e7; --shadow:0 1px 3px rgba(20,30,60,.08),0 6px 20px rgba(20,30,60,.06);
+    --radius:12px; --field:#ffffff;
+  }
+  :root[data-theme="dark"]{
+    --bg:#0f1523; --panel:#171f31; --ink:#e7ecf5; --muted:#9aa6bd;
+    --line:#28324a; --accent-soft:rgba(120,150,255,.20);
+    --ok:#4cc186; --ok-soft:#12321f; --warn:#e0a144; --warn-soft:#3a2c10;
+    --bad:#f0716f; --bad-soft:#3a1616; --shadow:0 1px 3px rgba(0,0,0,.3),0 8px 26px rgba(0,0,0,.4);
+    --field:#0f1626;
+  }
+  *{box-sizing:border-box}
+  html,body{margin:0}
+  html{font-size:14px}
+  body{font-family:system-ui,-apple-system,"Segoe UI",Roboto,Arial,sans-serif;background:var(--bg);color:var(--ink);font-size:1rem;line-height:1.4}
+  button{font-family:inherit;cursor:pointer}
+  h1,h2,h3{margin:0}
+  a{color:var(--accent)}
+  input,select{background:var(--field);color:var(--ink)}
+
+  header{background:linear-gradient(120deg,var(--accent-d),var(--accent));color:#fff;padding:14px 20px;box-shadow:var(--shadow);position:sticky;top:0;z-index:30}
+  .hd-row{display:flex;align-items:center;gap:14px;flex-wrap:wrap;max-width:1520px;margin:0 auto}
+  .hd-title h1{font-size:1.28rem;font-weight:700;letter-spacing:.2px}
+  .hd-title p{margin:2px 0 0;font-size:.85rem;opacity:.85}
+  .hd-spacer{flex:1}
+  .credits-box{display:flex;align-items:center;gap:9px;background:rgba(255,255,255,.14);padding:8px 14px;border-radius:999px;font-weight:600;font-size:.9rem}
+  .credits-box .num{font-size:1.25rem}
+  .credits-box.warn{background:rgba(255,220,150,.28)}
+  .credits-box.bad{background:rgba(255,150,150,.34)}
+  .switch{display:inline-flex;align-items:center;gap:8px;font-size:.88rem;font-weight:500;cursor:pointer;user-select:none}
+  .switch input{display:none}
+  .switch .track{width:38px;height:22px;border-radius:999px;background:rgba(255,255,255,.35);position:relative;transition:.15s}
+  .switch .track::after{content:"";position:absolute;top:2px;left:2px;width:18px;height:18px;border-radius:50%;background:#fff;transition:.15s}
+  .switch input:checked + .track{background:#ffd27a}
+  .switch input:checked + .track::after{transform:translateX(16px)}
+  .hd-btns{display:flex;gap:8px;flex-wrap:wrap;position:relative}
+  .hd-btns button{background:rgba(255,255,255,.16);color:#fff;border:1px solid rgba(255,255,255,.28);padding:7px 12px;border-radius:8px;font-size:.86rem;font-weight:600}
+  .hd-btns button:hover{background:rgba(255,255,255,.3)}
+  .dropdown{position:absolute;top:calc(100% + 6px);right:0;background:var(--panel);border:1px solid var(--line);border-radius:10px;box-shadow:var(--shadow);padding:6px;min-width:210px;display:none;z-index:40}
+  .dropdown.show{display:block}
+  .dropdown button{display:block;width:100%;text-align:left;background:transparent;color:var(--ink);border:none;padding:9px 11px;border-radius:7px;font-size:.9rem;font-weight:500}
+  .dropdown button:hover{background:var(--accent-soft)}
+  .dropdown .sep{height:1px;background:var(--line);margin:5px 4px}
+
+  main{max-width:1520px;margin:16px auto;padding:0 16px;display:grid;grid-template-columns:340px 1fr 310px;gap:16px;align-items:start}
+  @media (max-width:1180px){main{grid-template-columns:1fr}}
+  .panel{background:var(--panel);border:1px solid var(--line);border-radius:var(--radius);box-shadow:var(--shadow)}
+  .panel h2{font-size:.82rem;text-transform:uppercase;letter-spacing:.6px;color:var(--muted);padding:14px 16px 8px}
+
+  .filters{display:flex;flex-wrap:wrap;gap:6px;padding:0 16px 10px}
+  .chip-year{border:1px solid var(--line);background:var(--field);color:var(--muted);padding:5px 10px;border-radius:999px;font-size:.78rem;font-weight:600}
+  .chip-year.active{background:var(--accent);color:#fff;border-color:var(--accent)}
+  .search{width:calc(100% - 32px);margin:0 16px 12px;padding:9px 12px;border:1px solid var(--line);border-radius:8px;font-size:.9rem}
+  .search:focus{outline:2px solid var(--accent-soft);border-color:var(--accent)}
+  .cat-list{max-height:64vh;overflow:auto;padding:0 8px 8px}
+  .subj{border:1px solid var(--line);border-radius:10px;margin:0 8px 8px;overflow:hidden;background:var(--panel)}
+  .subj-head{display:flex;align-items:center;gap:8px;padding:9px 11px;cursor:pointer}
+  .subj-head:hover{background:var(--accent-soft)}
+  .subj-dot{width:10px;height:10px;border-radius:3px;flex:none}
+  .subj-code{font-size:.72rem;color:var(--muted);font-weight:700}
+  .subj-name{font-size:.9rem;font-weight:600;flex:1;min-width:0}
+  .subj-meta{font-size:.72rem;color:var(--muted);text-align:right}
+  .lockmini{font-size:.72rem;font-weight:700}
+  .caret{transition:.15s;color:var(--muted);font-size:.72rem}
+  .subj.open .caret{transform:rotate(90deg)}
+  .sections{display:block;overflow:hidden;max-height:0;opacity:0;padding:0 10px;transition:max-height .32s cubic-bezier(.22,1,.36,1),opacity .26s ease,padding .3s ease}
+  .subj.open>.sections{opacity:1;padding:6px 10px 10px;border-top:1px dashed var(--line)}
+  .req-box{font-size:.76rem;border:1px solid var(--line);border-radius:8px;padding:7px 9px;margin:2px 2px 8px;background:var(--field)}
+  .req-box .rl{margin:2px 0}
+  .req-tag{display:inline-block;font-size:.72rem;padding:1px 6px;border-radius:999px;margin:2px 3px 0 0;border:1px solid var(--line)}
+  .req-tag.ok{color:var(--ok);border-color:var(--ok)}
+  .req-tag.no{color:var(--bad);border-color:var(--bad)}
+  .sec{display:flex;align-items:center;gap:8px;padding:6px 4px;border-bottom:1px dashed var(--line)}
+  .sec:last-child{border-bottom:0}
+  .sec-info{flex:1;min-width:0}
+  .sec-title{font-size:.85rem;font-weight:600}
+  .sec-when{font-size:.72rem;color:var(--muted)}
+  .sec-prof{font-size:.72rem;color:var(--muted);font-style:italic}
+  .add-btn{border:1px solid var(--accent);color:var(--accent);background:var(--panel);border-radius:7px;padding:5px 9px;font-size:.78rem;font-weight:700;flex:none}
+  .add-btn:hover{background:var(--accent);color:#fff}
+  .add-btn.added{background:var(--ok);border-color:var(--ok);color:#fff}
+  .add-btn.conflict{border-color:var(--bad);color:var(--bad)}
+  .cred-edit{display:flex;align-items:center;gap:6px;font-size:.72rem;color:var(--muted);padding:2px 4px 6px}
+  .cred-edit input{width:46px;padding:3px 6px;border:1px solid var(--line);border-radius:6px;font-size:.78rem;text-align:center}
+
+  .grid-wrap{overflow:auto;padding:0 16px 16px}
+  table.grid{border-collapse:collapse;width:100%;min-width:640px;table-layout:fixed}
+  table.grid th,table.grid td{border:1px solid var(--line);vertical-align:top}
+  table.grid thead th{background:var(--field);font-size:.78rem;color:var(--muted);text-transform:uppercase;letter-spacing:.4px;padding:8px 4px;text-align:center}
+  .col-time{width:78px}
+  .time-cell{background:var(--field);text-align:center;font-size:.72rem;color:var(--muted);font-weight:600;padding:6px 2px}
+  .time-cell .bn{display:block;font-size:.85rem;color:var(--ink)}
+  td.slot{height:82px;padding:3px}
+  .ev{border-radius:7px;padding:4px 6px;font-size:.72rem;line-height:1.25;height:100%;overflow:hidden;position:relative;border-left:3px solid}
+  .ev .ec{font-weight:700;font-size:.66rem;opacity:.85}
+  .ev .en{font-weight:600;display:block}
+  .ev .ep{font-size:.64rem;opacity:.82;display:block;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;margin-top:1px}
+  .ev .ex{position:absolute;top:2px;right:4px;cursor:pointer;font-weight:700;opacity:.55;font-size:.8rem}
+  .ev .ex:hover{opacity:1}
+  .ev.clash{outline:2px solid var(--bad);outline-offset:-2px}
+  .ev.ayu{border-left-style:dashed;border-left-width:4px}
+  .ev.protected{background:repeating-linear-gradient(45deg,var(--field),var(--field) 6px,var(--line) 6px,var(--line) 12px);border-left-color:var(--muted);color:var(--muted)}
+  .stack{display:flex;flex-direction:column;gap:3px;height:100%}
+
+  .sel-list{padding:0 12px 6px}
+  .sel-empty{color:var(--muted);font-size:.85rem;padding:6px 4px 12px}
+  .sel-item{display:flex;align-items:center;gap:8px;border:1px solid var(--line);border-radius:9px;padding:8px 10px;margin-bottom:7px;background:var(--panel)}
+  .sel-item .sd{width:9px;height:34px;border-radius:4px;flex:none}
+  .sel-item .st{flex:1;min-width:0}
+  .sel-item .st b{font-size:.85rem;display:block;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+  .sel-item .st span{font-size:.72rem;color:var(--muted)}
+  .sel-item .rm{border:none;background:var(--bad-soft);color:var(--bad);border-radius:6px;padding:5px 8px;font-weight:700;font-size:.78rem}
+  .sel-item .rm:hover{background:var(--bad);color:#fff}
+
+  .banner{margin:0 16px 12px;padding:10px 12px;border-radius:9px;font-size:.85rem;display:flex;gap:9px;align-items:flex-start}
+  .banner.ok{background:var(--ok-soft);color:var(--ok)}
+  .banner.warn{background:var(--warn-soft);color:var(--warn)}
+  .banner.bad{background:var(--bad-soft);color:var(--bad)}
+  .banner b{display:block;margin-bottom:2px}
+  .banner .lnk{color:inherit;text-decoration:underline;cursor:pointer;font-weight:600}
+  .ghost-btn{width:calc(100% - 32px);margin:0 16px 14px;background:var(--panel);color:var(--accent);border:1px solid var(--accent);padding:9px;border-radius:9px;font-size:.9rem;font-weight:700}
+  .ghost-btn:hover{background:var(--accent-soft)}
+  .primary-btn{background:var(--accent);color:#fff;border:none;padding:11px;border-radius:9px;font-size:.92rem;font-weight:700}
+  .primary-btn:hover{background:var(--accent-d)}
+
+  .overlay{position:fixed;inset:0;background:rgba(10,15,28,.55);display:flex;align-items:center;justify-content:center;z-index:60;padding:16px;opacity:0;visibility:hidden;pointer-events:none;transition:opacity .26s ease,visibility 0s linear .26s}
+  .overlay.show{opacity:1;visibility:visible;pointer-events:auto;transition:opacity .26s ease,visibility 0s linear 0s}
+  .modal{background:var(--panel);border-radius:14px;max-width:780px;width:100%;max-height:90vh;overflow:auto;box-shadow:0 20px 60px rgba(0,0,0,.35);border:1px solid var(--line);opacity:0;transform:translateY(16px) scale(.985);transition:opacity .26s ease,transform .26s cubic-bezier(.22,1,.36,1)}
+  .overlay.show .modal{opacity:1;transform:none}
+  .modal.narrow{max-width:520px}
+  .modal-head{display:flex;align-items:center;justify-content:space-between;padding:16px 20px;border-bottom:1px solid var(--line);position:sticky;top:0;background:var(--panel);z-index:2}
+  .modal-head h3{font-size:1.05rem}
+  .modal-close{border:none;background:var(--field);border-radius:8px;width:30px;height:30px;font-size:1.05rem;font-weight:700;color:var(--muted)}
+  .modal-body{padding:18px 20px}
+  .muted{color:var(--muted)}
+
+  .set-group{margin-bottom:18px}
+  .set-group h4{margin:0 0 8px;font-size:.82rem;text-transform:uppercase;letter-spacing:.5px;color:var(--muted)}
+  .seg{display:inline-flex;border:1px solid var(--line);border-radius:9px;overflow:hidden}
+  .seg button{background:var(--field);color:var(--ink);border:none;padding:8px 14px;font-size:.86rem;font-weight:600}
+  .seg button.active{background:var(--accent);color:#fff}
+  .swatches{display:flex;gap:9px;flex-wrap:wrap;align-items:center}
+  .swatch{width:30px;height:30px;border-radius:50%;border:2px solid var(--line);cursor:pointer}
+  .swatch.active{outline:2px solid var(--accent);outline-offset:2px}
+  .row-form{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:10px}
+  .row-form label{font-size:.78rem;color:var(--muted);display:block;margin-bottom:3px}
+  .row-form input,.row-form select{width:100%;padding:8px;border:1px solid var(--line);border-radius:8px;font-size:.88rem}
+  .full{grid-column:1/-1}
+  .blk-picker{display:flex;flex-wrap:wrap;gap:6px}
+  .blk-picker label{display:inline-flex;align-items:center;gap:5px;border:1px solid var(--line);border-radius:8px;padding:6px 9px;font-size:.8rem;cursor:pointer}
+
+  .opt-subjects{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-bottom:14px}
+  @media (max-width:640px){.opt-subjects,.row-form{grid-template-columns:1fr}}
+  .opt-s{border:1px solid var(--line);border-radius:9px;padding:9px 11px;display:flex;align-items:center;gap:9px}
+  .opt-s input[type=checkbox]{width:17px;height:17px}
+  .opt-s .oi{flex:1;min-width:0}
+  .opt-s .oi b{font-size:.85rem;display:block}
+  .opt-s .oi span{font-size:.72rem;color:var(--muted)}
+  .opt-s select{font-size:.76rem;padding:4px;border:1px solid var(--line);border-radius:6px;max-width:120px}
+  .res-card{border:1px solid var(--line);border-radius:10px;padding:12px;margin-bottom:10px}
+  .res-card .rh{display:flex;justify-content:space-between;align-items:center;margin-bottom:8px}
+  .res-tags{display:flex;flex-wrap:wrap;gap:5px}
+  .res-tag{font-size:.72rem;background:var(--field);border:1px solid var(--line);border-radius:999px;padding:3px 8px;font-weight:600}
+  .apply-btn{background:var(--ok);color:#fff;border:none;border-radius:7px;padding:6px 12px;font-weight:700;font-size:.78rem}
+
+  .malla-year{margin-bottom:14px}
+  .malla-year .my-head{display:flex;align-items:center;justify-content:space-between;margin-bottom:6px}
+  .malla-year h4{font-size:.86rem;margin:0}
+  .mini-btn{font-size:.72rem;border:1px solid var(--line);background:var(--field);color:var(--muted);border-radius:6px;padding:3px 8px;font-weight:600}
+  .malla-grid{display:grid;grid-template-columns:1fr 1fr;gap:6px}
+  @media (max-width:640px){.malla-grid{grid-template-columns:1fr}}
+  .mc{display:flex;align-items:center;gap:7px;border:1px solid var(--line);border-radius:8px;padding:6px 9px;font-size:.8rem}
+  .mc input{width:16px;height:16px}
+  .mc.appr{background:var(--ok-soft);border-color:var(--ok)}
+  .proc-list{padding-left:18px}
+  .proc-list li{margin-bottom:8px}
+  .note-box{background:var(--field);border:1px solid var(--line);border-radius:9px;padding:10px 12px;font-size:.8rem;color:var(--muted)}
+
+  .reco-body{padding:0 16px 16px}
+  .reco-strip{display:grid;grid-template-columns:repeat(5,1fr);gap:6px;margin-bottom:12px}
+  .reco-day{border:1px solid var(--line);border-radius:9px;padding:7px 4px;text-align:center;font-size:.72rem}
+  .reco-day b{display:block;font-size:.82rem}
+  .reco-day span{color:var(--muted);display:block;font-size:.66rem}
+  .reco-day em{display:block;font-style:normal;font-weight:700;margin-top:2px;font-size:.68rem}
+  .reco-day.free{background:var(--ok-soft);border-color:var(--ok)} .reco-day.free em{color:var(--ok)}
+  .reco-day.ok em{color:var(--muted)}
+  .reco-day.light em{color:var(--warn)}
+  .reco-day.heavy{background:var(--warn-soft);border-color:var(--warn)} .reco-day.heavy em{color:var(--warn)}
+  .reco-day.heavy2{background:var(--bad-soft);border-color:var(--bad)} .reco-day.heavy2 em{color:var(--bad)}
+  .reco-card{display:flex;gap:9px;align-items:flex-start;padding:8px 11px;border-radius:9px;font-size:.82rem;margin-bottom:6px;background:var(--field);border:1px solid var(--line)}
+  .reco-card.good{background:var(--ok-soft);border-color:var(--ok)}
+  .reco-card.warn{background:var(--warn-soft);border-color:var(--warn)}
+  .reco-card.bad{background:var(--bad-soft);border-color:var(--bad)}
+  .reco-card span{font-size:1.05rem;line-height:1.1}
+
+  .quick-sel{display:flex;flex-wrap:wrap;gap:6px;align-items:center;padding:0 16px 12px}
+  .qs-label{font-size:.76rem;color:var(--muted);font-weight:600}
+  .qs-hint{font-size:.76rem;color:var(--muted)}
+  .qs-btn{border:1px solid var(--accent);color:var(--accent);background:var(--panel);border-radius:999px;padding:5px 12px;font-size:.78rem;font-weight:700}
+  .qs-btn:hover{background:var(--accent);color:#fff}
+  .qs-btn.clear{border-color:var(--line);color:var(--muted)}
+  .qs-btn.clear:hover{background:var(--bad);border-color:var(--bad);color:#fff}
+
+  .toast{position:fixed;left:50%;bottom:24px;transform:translateX(-50%) translateY(20px);background:var(--ink);color:var(--panel);padding:11px 18px;border-radius:10px;font-size:.85rem;font-weight:600;box-shadow:var(--shadow);opacity:0;pointer-events:none;transition:.25s;z-index:80;max-width:90vw;text-align:center}
+  .toast.show{opacity:1;transform:translateX(-50%) translateY(0)}
+
+  .wl-body{padding:30px 26px 22px;text-align:center}
+  .wl-ic{font-size:2.6rem;margin-bottom:8px}
+  .beta-badge{display:inline-block;background:rgba(255,255,255,.22);border:1px solid rgba(255,255,255,.4);color:#fff;font-size:.58rem;font-weight:800;letter-spacing:1.2px;padding:2px 7px;border-radius:999px;vertical-align:middle;margin-left:7px}
+  .wl-step{font-size:.7rem;font-weight:800;letter-spacing:1px;text-transform:uppercase;color:var(--accent);margin-bottom:6px}
+  .wl-body h3{font-size:1.18rem;margin-bottom:8px}
+  .wl-body p{font-size:.92rem;line-height:1.5;margin:0 0 18px;color:var(--muted)}
+  .wl-dots{display:flex;gap:6px;justify-content:center;margin-bottom:18px}
+  .wl-dot{width:8px;height:8px;border-radius:50%;background:var(--line);transition:.2s}
+  .wl-dot.on{background:var(--accent);width:22px;border-radius:5px}
+  .wl-actions{display:flex;align-items:center;gap:8px}
+  .wl-actions .ghost-btn,.wl-actions .primary-btn{width:auto;margin:0;padding:9px 16px}
+
+  /* Animaciones y transiciones */
+  @keyframes evPop{from{opacity:0;transform:scale(.85)}to{opacity:1;transform:scale(1)}}
+  @keyframes fadeUp{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:translateY(0)}}
+  @keyframes wlFade{from{opacity:0;transform:translateY(6px)}to{opacity:1;transform:translateY(0)}}
+  .ev.pop{animation:evPop .3s cubic-bezier(.22,1,.36,1)}
+  .sel-item.pop{animation:fadeUp .3s ease}
+  .hd-btns button,.chip-year,.qs-btn,.add-btn,.apply-btn,.mini-btn,.swatch,.primary-btn,.ghost-btn{transition:transform .14s ease,background .16s ease,color .16s ease,box-shadow .16s ease,border-color .16s ease}
+  .hd-btns button:active,.chip-year:active,.qs-btn:active,.add-btn:active,.primary-btn:active,.ghost-btn:active{transform:scale(.94)}
+  .caret{transition:transform .22s cubic-bezier(.22,1,.36,1)}
+  .subj{transition:box-shadow .16s ease,border-color .16s ease}
+  .subj:hover{box-shadow:var(--shadow)}
+  .sel-item,.reco-card,.res-card,.opt-s,.note-box{transition:transform .15s ease,box-shadow .15s ease}
+  .sel-item:hover,.res-card:hover{transform:translateY(-1px);box-shadow:var(--shadow)}
+  .ev{transition:transform .13s ease,box-shadow .13s ease}
+  .ev:hover{transform:translateY(-1px);box-shadow:0 3px 10px rgba(0,0,0,.14);z-index:2}
+  .credits-box .num{transition:transform .2s cubic-bezier(.34,1.56,.64,1)}
+  .track,.track::after{transition:.18s ease}
+  @media (prefers-reduced-motion:reduce){*{animation:none !important;transition:none !important}}
+
+  /* ===== MÓVIL: que la toma de ramos funcione bien desde el celular ===== */
+  .d-short{display:none}
+  @media (max-width:720px){
+    header{padding:10px 12px;position:sticky}
+    .hd-row{gap:9px}
+    .hd-title h1{font-size:1.02rem}
+    .hd-title p{font-size:.68rem;line-height:1.25}
+    .hd-spacer{display:none}
+    .credits-box{padding:6px 11px;font-size:.8rem}
+    .credits-box .num{font-size:1.02rem}
+    .switch span:last-child{font-size:.76rem}
+    .hd-btns{width:100%;gap:5px}
+    .hd-btns button{flex:1 1 auto;padding:8px 7px;font-size:.72rem;min-height:38px}
+    main{padding:0 8px;gap:10px;margin:10px auto}
+    .panel h2{padding:12px 12px 6px;font-size:.75rem}
+    .filters,.quick-sel{padding-left:12px;padding-right:12px}
+    .search{width:calc(100% - 24px);margin-left:12px;margin-right:12px}
+    .cat-list{max-height:none;padding:0 4px 8px}
+    .subj{margin:0 4px 8px}
+    /* La grilla completa cabe en pantalla: sin scroll horizontal */
+    .grid-wrap{padding:0 8px 12px}
+    table.grid{min-width:0}
+    .col-time{width:40px}
+    .time-cell{font-size:.55rem;padding:4px 1px}
+    .time-cell .bn{font-size:.7rem}
+    table.grid thead th{font-size:.62rem;padding:6px 1px;letter-spacing:0}
+    .d-full{display:none} .d-short{display:inline}
+    td.slot{height:68px;padding:2px}
+    .ev{padding:3px 4px;font-size:.56rem;border-left-width:3px;border-radius:5px}
+    .ev .ec{font-size:.5rem}
+    .ev .ep{display:none} /* el profesor se ve en «Mi selección» */
+    .ev .ex{font-size:.85rem;top:0;right:3px;opacity:.75}
+    .reco-body{padding:0 12px 14px}
+    .reco-strip{gap:4px}
+    .reco-day{padding:5px 2px}
+    .reco-day b{font-size:.72rem}
+    .reco-day span{font-size:.55rem}
+    .reco-day em{font-size:.56rem}
+    .reco-card{font-size:.78rem;padding:8px 9px}
+    .sel-list{padding:0 10px 6px}
+    .banner{margin:0 12px 10px;font-size:.8rem}
+    .ghost-btn,.primary-btn{width:calc(100% - 24px);margin-left:12px;margin-right:12px}
+    .modal-body{padding:14px}
+    .modal-head{padding:13px 14px}
+    .wl-body{padding:24px 18px 18px}
+    .wl-ic{font-size:2.2rem}
+    .wl-body h3{font-size:1.05rem}
+    .wl-body p{font-size:.86rem}
+    .add-btn{padding:8px 11px;min-height:36px}
+    .qs-btn{padding:7px 13px;min-height:34px}
+    .chip-year{padding:7px 11px;min-height:32px}
+  }
+  @media (max-width:400px){
+    .hd-btns button{font-size:.68rem;padding:7px 5px}
+    .ev{font-size:.52rem} .ev .ec{font-size:.46rem}
+    .col-time{width:34px} .time-cell{font-size:.5rem}
+  }
+
+  @media print{
+    header,.panel--cat,.panel--sel,.no-print,#recoHost{display:none !important}
+    main{display:block;margin:0;padding:0}
+    .panel--grid{border:none;box-shadow:none}
+    body{background:#fff}
+    .print-title{display:block !important}
+    :root{--panel:#fff;--ink:#000;--field:#fff}
+  }
+  .print-title{display:none;text-align:center;margin:0 0 10px}
+  .print-title h1{font-size:1.25rem}
+  .print-title p{margin:2px 0 0;color:var(--muted);font-size:.85rem}
+</style>
+</head>
+<body>
+<header>
+  <div class="hd-row">
+    <div class="hd-title">
+      <h1>🎓 Toma de Ramos <span class="beta-badge">BETA</span></h1>
+      <p>Ingeniería en Negocios Internacionales · UV Viña del Mar · 2.º Semestre 2026</p>
+    </div>
+    <div class="hd-spacer"></div>
+    <label class="switch" title="Permite superar los 30 créditos">
+      <input type="checkbox" id="overloadChk">
+      <span class="track"></span>
+      <span>Sobrecarga</span>
+    </label>
+    <div class="credits-box" id="creditsBox">
+      <span class="num" id="credNum">0</span>
+      <span>/ <span id="credMax">30</span> créditos</span>
+    </div>
+    <div class="hd-btns">
+      <button id="btnHelp" title="Ver tutorial de bienvenida">❓ Tutorial</button>
+      <button id="btnOpt">✨ Optimizador</button>
+      <button id="btnAvance">🎓 Mi avance</button>
+      <button id="btnAyu">➕ Ayudantía</button>
+      <button id="btnTravel">🚌 Viaje</button>
+      <button id="btnExport">⬇️ Exportar ▾</button>
+      <button id="btnSettings">⚙️ Ajustes</button>
+      <button id="btnFeedback" title="Cuéntanos qué te pareció">💬 Feedback</button>
+      <div class="dropdown" id="exportMenu">
+        <button data-exp="pdf">📄 Guardar como PDF (imprimir)</button>
+        <button data-exp="jpg">🖼️ Imagen JPG</button>
+        <button data-exp="png">🖼️ Imagen PNG</button>
+        <div class="sep"></div>
+        <button data-exp="json">💾 Datos (JSON)</button>
+        <button data-exp="import">📂 Importar datos (JSON)</button>
+      </div>
+    </div>
+  </div>
+</header>
+
+<main>
+  <section class="panel panel--cat">
+    <h2>Catálogo de asignaturas</h2>
+    <div class="filters" id="yearFilters"></div>
+    <div class="quick-sel" id="quickSelect"></div>
+    <input class="search" id="searchBox" placeholder="Buscar por nombre o código (ej. Inglés, INI 224)…">
+    <div class="cat-list" id="catList"></div>
+  </section>
+
+  <section class="panel panel--grid">
+    <div class="print-title">
+      <h1>Mi horario · 2.º Semestre 2026</h1>
+      <p>Ingeniería en Negocios Internacionales — UV Viña del Mar</p>
+    </div>
+    <h2 class="no-print">Horario semanal</h2>
+    <div class="grid-wrap"><div id="gridHost"></div></div>
+    <div id="recoHost" class="no-print-hint"></div>
+  </section>
+
+  <section class="panel panel--sel">
+    <h2>Mi selección</h2>
+    <div id="alerts"></div>
+    <div class="sel-list" id="selList"></div>
+    <button class="ghost-btn" id="btnOpt2">✨ Buscar combinación sin tope</button>
+  </section>
+</main>
+
+<!-- Optimizer -->
+<div class="overlay" id="optOverlay"><div class="modal">
+  <div class="modal-head"><h3>✨ Optimizador de horario</h3><button class="modal-close" data-close>×</button></div>
+  <div class="modal-body">
+    <p class="muted" style="margin-top:0">Marca las asignaturas que quieres cursar. El sistema probará las combinaciones de secciones y te mostrará las que <b>no tienen topes</b>. Puedes fijar una sección obligatoria.</p>
+    <div class="opt-subjects" id="optSubjects"></div>
+    <button class="primary-btn" id="runOpt" style="width:100%;margin:6px 0 4px">Buscar combinaciones sin tope</button>
+    <div id="optResults"></div>
+  </div>
+</div></div>
+
+<!-- Settings -->
+<div class="overlay" id="setOverlay"><div class="modal narrow">
+  <div class="modal-head"><h3>⚙️ Ajustes y personalización</h3><button class="modal-close" data-close>×</button></div>
+  <div class="modal-body">
+    <div class="set-group">
+      <h4>Tema</h4>
+      <div class="seg" id="themeSeg">
+        <button data-theme="light">☀️ Claro</button>
+        <button data-theme="dark">🌙 Oscuro</button>
+        <button data-theme="auto">🖥️ Auto</button>
+      </div>
+    </div>
+    <div class="set-group">
+      <h4>Color de acento</h4>
+      <div class="swatches" id="accentSwatches"></div>
+      <div style="margin-top:10px;font-size:.8rem;color:var(--muted)">Personalizado: <input type="color" id="accentCustom" value="#1f4bd8" style="vertical-align:middle;width:40px;height:28px;border:1px solid var(--line);border-radius:6px;background:none"></div>
+    </div>
+    <div class="set-group">
+      <h4>Tamaño de letra</h4>
+      <div class="seg" id="fontSeg">
+        <button data-font="13">Pequeño</button>
+        <button data-font="14">Normal</button>
+        <button data-font="15">Grande</button>
+      </div>
+    </div>
+    <div class="set-group">
+      <h4>Colores del horario</h4>
+      <label class="switch" style="color:var(--ink)"><input type="checkbox" id="colorBySubj"><span class="track" style="background:var(--line)"></span><span>Un color distinto por asignatura</span></label>
+    </div>
+    <div class="set-group">
+      <h4>Requisitos</h4>
+      <label class="switch" style="color:var(--ink)"><input type="checkbox" id="reqActiveChk"><span class="track" style="background:var(--line)"></span><span>Controlar requisitos con mi avance</span></label>
+      <p class="muted" style="font-size:.78rem;margin:8px 0 0">Cuando está activo, la app avisa si tomas un ramo cuyo prerrequisito aún no apruebas. Marca tus ramos aprobados en <b>🎓 Mi avance</b>.</p>
+    </div>
+    <div class="set-group" style="margin-bottom:0">
+      <h4>Más</h4>
+      <button class="mini-btn" id="btnProc" style="padding:7px 12px">ℹ️ Regla de créditos (Simulación)</button>
+      <button class="mini-btn" id="btnClear" style="padding:7px 12px;color:var(--bad);border-color:var(--bad)">🗑️ Borrar toda mi selección</button>
+    </div>
+  </div>
+</div></div>
+
+<!-- Ayudantía -->
+<div class="overlay" id="ayuOverlay"><div class="modal narrow">
+  <div class="modal-head"><h3>➕ Agregar ayudantía / bloque personal</h3><button class="modal-close" data-close>×</button></div>
+  <div class="modal-body">
+    <div class="row-form">
+      <div class="full"><label>Nombre</label><input id="ayuName" placeholder="Ej. Ayudantía Microeconomía"></div>
+      <div><label>Profesor / Ayudante (opcional)</label><input id="ayuProf" placeholder="Ej. Juan Pérez"></div>
+      <div><label>Sala (opcional)</label><input id="ayuRoom" placeholder="Ej. Sala 302"></div>
+      <div class="full"><label>Día</label>
+        <select id="ayuDay"><option value="0">Lunes</option><option value="1">Martes</option><option value="2">Miércoles</option><option value="3">Jueves</option><option value="4">Viernes</option></select>
+      </div>
+      <div class="full"><label>Bloque(s)</label><div class="blk-picker" id="ayuBlocks"></div></div>
+      <div><label>Color</label><input type="color" id="ayuColor" value="#6b7280" style="height:38px;padding:2px"></div>
+    </div>
+    <button class="primary-btn" id="ayuSave" style="width:100%">Agregar al horario</button>
+    <div id="ayuList" style="margin-top:14px"></div>
+  </div>
+</div></div>
+
+<!-- Mi avance (requisitos aprobados) -->
+<div class="overlay" id="avOverlay"><div class="modal">
+  <div class="modal-head"><h3>🎓 Mi avance — ramos aprobados</h3><button class="modal-close" data-close>×</button></div>
+  <div class="modal-body">
+    <p class="muted" style="margin-top:0">Marca los ramos que <b>ya aprobaste</b>. La app usará esto para avisarte si te falta un prerrequisito. Se guarda automáticamente.</p>
+    <div id="mallaHost"></div>
+  </div>
+</div></div>
+
+<!-- Viaje y costos -->
+<div class="overlay" id="travelOverlay"><div class="modal">
+  <div class="modal-head"><h3>🚌 Viaje y costos</h3><button class="modal-close" data-close>×</button></div>
+  <div class="modal-body">
+    <div class="banner warn" style="margin:0 0 14px"><span>⚠️</span><div><b>Es solo una recomendación referencial.</b>Sal siempre con margen: pueden ocurrir imprevistos en la mañana (tacos, micros atrasadas, lluvia) que te hagan llegar tarde. Los tiempos y costos son estimaciones — ajústalos a tu realidad.</div></div>
+    <div class="row-form">
+      <div><label>¿Desde dónde viajas?</label><select id="tvOrigin"></select></div>
+      <div><label>Comuna/dirección (para Maps)</label><input id="tvAddr" placeholder="Ej. Quillota centro"></div>
+      <div><label>Tiempo de viaje — ida (min)</label><input type="number" id="tvTime" min="1"></div>
+      <div><label>Costo por pasaje — ida (CLP)</label><input type="number" id="tvCost" min="0" step="100"></div>
+      <div><label>Pasajes por día</label><select id="tvTrips"><option value="2">2 (ida y vuelta)</option><option value="1">1 (solo ida)</option><option value="4">4 (con transbordo)</option></select></div>
+      <div><label>Margen de seguridad (min)</label><input type="number" id="tvBuffer" min="0" step="5" value="30"></div>
+    </div>
+    <button class="primary-btn" id="tvCalc" style="width:100%;margin-bottom:8px">Calcular recomendación</button>
+    <button class="ghost-btn" id="tvMaps" style="width:100%;margin:0 0 10px">🗺️ Ver ruta y horarios reales en Google Maps</button>
+    <div id="tvResult"></div>
+  </div>
+</div></div>
+
+<!-- Procedure -->
+<div class="overlay" id="procOverlay"><div class="modal">
+  <div class="modal-head"><h3>ℹ️ Inscripción y límite de créditos</h3><button class="modal-close" data-close>×</button></div>
+  <div class="modal-body">
+    <p>El sistema oficial permite registrar un <b>máximo de 30 créditos por semestre</b>. Para 4.º y 8.º semestre (que suman 31 y 32 créditos), la Escuela recomienda:</p>
+    <ol class="proc-list">
+      <li>Inscribe primero las asignaturas <b>más atrasadas</b> (ramos reprobados o pendientes).</li>
+      <li>Da prioridad a las líneas de <b>Informática e Idiomas</b> (más secciones, cupos limitados).</li>
+      <li>Si necesitas una sección específica por horario, inscribe primero las asignaturas con más secciones disponibles.</li>
+      <li><b>No inscribas inicialmente</b> INI 221 — Simulación de Negocios I ni INI 427 — Simulación de Negocios II. Esto evita exceder los 30 créditos.</li>
+      <li>Finalmente, solicita la inscripción de Simulación de Negocios por <b>“Modificación de Asignaturas”</b>, indicando en la glosa que <i>“solicita la inscripción por exceder el límite de créditos”</i>.</li>
+      <li>La solicitud se autoriza si la asignatura corresponde a la carga del 4.º u 8.º semestre.</li>
+    </ol>
+    <div class="note-box" style="margin-top:12px">Los créditos de cada ramo son los <b>oficiales del simulador académico UV</b> y están fijos (no editables).</div>
+  </div>
+</div></div>
+
+<!-- Bienvenida / Tutorial -->
+<div class="overlay" id="welcomeOverlay"><div class="modal narrow">
+  <div class="wl-body">
+    <div class="wl-ic" id="wlIc"></div>
+    <div class="wl-step" id="wlStepNum"></div>
+    <h3 id="wlTitle"></h3>
+    <p id="wlText"></p>
+    <div class="wl-dots" id="wlDots"></div>
+    <div class="wl-actions">
+      <button class="mini-btn" id="wlSkip">Saltar</button>
+      <div style="flex:1"></div>
+      <button class="ghost-btn" id="wlPrev">Atrás</button>
+      <button class="primary-btn" id="wlNext">Siguiente</button>
+    </div>
+  </div>
+</div></div>
+
+<div id="toast" class="toast"></div>
+<input type="file" id="fileInput" accept="application/json" style="display:none">
+<canvas id="exportCanvas" style="display:none"></canvas>
+
+<script>
+/* ============ DATOS BASE ============ */
+const DIAS=["Lunes","Martes","Miércoles","Jueves","Viernes"];
+const DIAS_CORTO=["Lun","Mar","Mié","Jue","Vie"];
+const BLOQUES=[
+  {n:1,ini:"08:30",fin:"10:00"},{n:2,ini:"10:15",fin:"11:45"},
+  {n:3,ini:"12:00",fin:"13:30"},{n:4,ini:"14:00",fin:"15:30"},
+  {n:5,ini:"15:35",fin:"17:05"},{n:6,ini:"17:10",fin:"18:40"}
+];
+const CATS=[{id:"1",label:"1.º año"},{id:"2",label:"2.º año"},{id:"3",label:"3.º año"},{id:"4",label:"4.º año"},{id:"5",label:"5.º año"},{id:"R",label:"Repitencia"}];
+
+// m: [díaIndex(0=Lun..4=Vie), bloque(1..6)]
+const SECCIONES=[
+  // 1.º AÑO
+  {c:"INI 121",s:"A",n:"Historia de las Relaciones Internacionales",cats:["1"],p:"María Jesús Miranda",m:[[2,1],[4,2]]},
+  {c:"INI 121",s:"B",n:"Historia de las Relaciones Internacionales",cats:["1"],p:"María Jesús Miranda",m:[[1,2],[3,4]]},
+  {c:"INI 121",s:"C",n:"Historia de las Relaciones Internacionales",cats:["1"],p:"María Jesús Miranda",m:[[1,1],[4,3]]},
+  {c:"INI 121",s:"D",n:"Historia de las Relaciones Internacionales",cats:["1"],p:"María Jesús Miranda",m:[[4,1],[2,3]]},
+  {c:"INI 122",s:"A",n:"Geografía Política y Económica",cats:["1"],p:"Christian Rodríguez",m:[[1,4],[3,5]]},
+  {c:"INI 122",s:"B",n:"Geografía Política y Económica",cats:["1"],p:"Christian Rodríguez",m:[[0,2],[1,5]]},
+  {c:"INI 122",s:"C",n:"Geografía Política y Económica",cats:["1"],p:"Christian Rodríguez",m:[[3,4],[4,5]]},
+  {c:"INI 122",s:"D",n:"Geografía Política y Económica",cats:["1"],p:"Christian Rodríguez",m:[[0,1],[4,4]]},
+  {c:"INI 123",s:"A",n:"Psicología Social y Organizacional",cats:["1"],p:"Andrés Bernal",m:[[2,3],[4,3]]},
+  {c:"INI 123",s:"B",n:"Psicología Social y Organizacional",cats:["1"],p:"Andrés Bernal",m:[[4,2],[3,3]]},
+  {c:"INI 123",s:"C",n:"Psicología Social y Organizacional",cats:["1"],p:"Andrés Bernal",m:[[0,1],[1,4]]},
+  {c:"INI 123",s:"D",n:"Psicología Social y Organizacional",cats:["1"],p:"Andrés Bernal",m:[[2,1],[3,2]]},
+  {c:"INI 124",s:"A",n:"Cálculo I",cats:["1"],p:"M. Cuevas",m:[[3,3],[4,5]]},
+  {c:"INI 124",s:"B",n:"Cálculo I",cats:["1"],p:"M. E. Saavedra",m:[[0,3],[4,3]]},
+  {c:"INI 124",s:"C",n:"Cálculo I",cats:["1"],p:"M. Cuevas",m:[[4,2],[0,4]]},
+  {c:"INI 124",s:"D",n:"Cálculo I",cats:["1"],p:"I. Jorquera",m:[[1,2],[0,4]]},
+  {c:"INI 125",s:"A",n:"Sistemas de Información I",cats:["1"],p:"Víctor Ibaceta",m:[[1,6],[3,6]]},
+  {c:"INI 125",s:"B",n:"Sistemas de Información I",cats:["1"],p:"Jorge Catalán",m:[[1,1],[2,3]]},
+  {c:"INI 125",s:"C",n:"Sistemas de Información I",cats:["1"],p:"Jorge Catalán",m:[[1,2],[3,2]]},
+  {c:"INI 125",s:"D",n:"Sistemas de Información I",cats:["1"],p:"Jorge Catalán",m:[[2,2],[3,3]]},
+  {c:"INI 125",s:"E",n:"Sistemas de Información I",cats:["1"],p:"Gino Astorga",m:[[2,5],[3,5]]},
+  {c:"INI 125",s:"F",n:"Sistemas de Información I",cats:["1"],p:"Omar Cifuentes",m:[[0,5],[0,6]]},
+  {c:"INI 126",s:"A",n:"Inglés I",cats:["1"],p:"P. Fernández",m:[[3,2],[0,3],[1,5]]},
+  {c:"INI 126",s:"B",n:"Inglés I",cats:["1"],p:"P. Fernández",m:[[3,1],[4,1],[2,5]]},
+  {c:"INI 126",s:"C",n:"Inglés I",cats:["1"],p:"F. Marín",m:[[0,2],[2,2],[2,3]]},
+  {c:"INI 126",s:"D",n:"Inglés I",cats:["1"],p:"P. Fernández",m:[[0,2],[4,2],[1,4]]},
+  {c:"INI 126",s:"E",n:"Inglés I",cats:["1"],p:"F. Marín",m:[[3,1],[2,5],[2,6]]},
+  // 2.º AÑO
+  {c:"INI 221",s:"A",n:"Simulación de Negocios I",cats:["2"],p:"Andrés Bernal / Eduardo Villegas",m:[[4,1],[1,2]],sim:true},
+  {c:"INI 221",s:"B",n:"Simulación de Negocios I",cats:["2"],p:"Andrés Bernal / Eduardo Villegas",m:[[1,1],[0,2]],sim:true},
+  {c:"INI 221",s:"C",n:"Simulación de Negocios I",cats:["2"],p:"Andrés Bernal / Eduardo Villegas",m:[[3,1],[2,2]],sim:true},
+  {c:"INI 222",s:"A",n:"Marketing Operativo",cats:["2"],p:"Gonzalo Castillejo",m:[[3,1],[2,6]]},
+  {c:"INI 222",s:"B",n:"Marketing Operativo",cats:["2"],p:"Gonzalo Castillejo",m:[[2,1],[3,3]]},
+  {c:"INI 222",s:"C",n:"Marketing Operativo",cats:["2"],p:"Eduardo Villegas",m:[[0,1],[4,3]]},
+  {c:"INI 223",s:"A",n:"Contabilidad Administrativa",cats:["2"],p:"Fabiola Jeldes",m:[[3,3],[1,5],[2,5]]},
+  {c:"INI 223",s:"B",n:"Contabilidad Administrativa",cats:["2"],p:"Ámbar Soto",m:[[1,2],[3,2],[2,3]]},
+  {c:"INI 223",s:"C",n:"Contabilidad Administrativa",cats:["2"],p:"Marlen Piña",m:[[1,4],[0,5],[3,5]]},
+  {c:"INI 224",s:"A",n:"Estadística para los Negocios",cats:["2"],p:"Isabel Jorquera / Daniel Cáceres",m:[[1,1],[4,2],[0,5]]},
+  {c:"INI 224",s:"B",n:"Estadística para los Negocios",cats:["2"],p:"Adriana Latorre / Daniel Cáceres",m:[[3,1],[4,3],[2,5]]},
+  {c:"INI 224",s:"C",n:"Estadística para los Negocios",cats:["2"],p:"Daniel Cáceres / Adriana Latorre",m:[[4,1],[1,2],[3,4]]},
+  {c:"INI 225",s:"A",n:"Microeconomía",cats:["2"],p:"Sergio Díaz",m:[[2,2],[0,3]]},
+  {c:"INI 225",s:"B",n:"Microeconomía",cats:["2"],p:"Sergio Díaz",m:[[0,1],[4,4]]},
+  {c:"INI 225",s:"C",n:"Microeconomía",cats:["2"],p:"Patricio Vicencio",m:[[2,1],[4,2]]},
+  {c:"INI 226",s:"A",n:"Inglés III",cats:["2"],p:"Juan G. Inostroza",m:[[0,2],[3,2],[2,3]]},
+  {c:"INI 226",s:"B",n:"Inglés III",cats:["2"],p:"Teresa Pino",m:[[2,2],[0,3],[1,5]]},
+  {c:"INI 226",s:"C",n:"Inglés III",cats:["2"],p:"Teresa Pino",m:[[0,2],[3,2],[2,3]]},
+  {c:"INI 226",s:"D",n:"Inglés III",cats:["2"],p:"Juan G. Inostroza",m:[[0,3],[2,4],[1,5]]},
+  // 3.º AÑO
+  {c:"INI 321",s:"A",n:"Teoría del Conflicto y Negociación",cats:["3"],p:"Mauricio Burgos",m:[[3,1],[3,2]]},
+  {c:"INI 321",s:"B",n:"Teoría del Conflicto y Negociación",cats:["3"],p:"Carla Henríquez",m:[[3,1],[3,2]]},
+  {c:"INI 321",s:"C",n:"Teoría del Conflicto y Negociación",cats:["3"],p:"Carla Henríquez",m:[[2,1],[2,2]]},
+  {c:"INI 322",s:"A",n:"Gestión Aduanera y Documental",cats:["3"],p:"Juan E. Figueroa",m:[[1,1],[1,2]]},
+  {c:"INI 322",s:"B",n:"Gestión Aduanera y Documental",cats:["3"],p:"Rodrigo Astudillo",m:[[0,6],[1,6]]},
+  {c:"INI 322",s:"C",n:"Gestión Aduanera y Documental",cats:["3"],p:"Juan E. Figueroa",m:[[2,4],[1,6]]},
+  {c:"INI 323",s:"A",n:"Macroeconomía",cats:["3"],p:"Patricio Vicencio",m:[[0,2],[2,2]]},
+  {c:"INI 323",s:"B",n:"Macroeconomía",cats:["3"],p:"Patricio Vicencio",m:[[1,4],[2,4]]},
+  {c:"INI 323",s:"C",n:"Macroeconomía",cats:["3"],p:"Patricio Vicencio",m:[[4,3],[1,5]]},
+  {c:"INI 324",s:"A",n:"Gestión de Operaciones",cats:["3"],p:"Cristian Barría",m:[[0,3],[2,3],[3,4]]},
+  {c:"INI 324",s:"B",n:"Gestión de Operaciones",cats:["3"],p:"Sergio Díaz",m:[[0,2],[2,3],[4,5]]},
+  {c:"INI 324",s:"C",n:"Gestión de Operaciones",cats:["3"],p:"Cristian Barría",m:[[1,2],[4,2],[0,4]]},
+  {c:"INI 325",s:"A",n:"Derecho Comercial Internacional",cats:["3"],p:"Sebastián Abarca",m:[[4,5],[4,6]]},
+  {c:"INI 325",s:"B",n:"Derecho Comercial Internacional",cats:["3"],p:"L. Figueroa",m:[[4,2],[3,6]]},
+  {c:"INI 325",s:"C",n:"Derecho Comercial Internacional",cats:["3"],p:"A. Villarroel",m:[[4,1],[3,5]]},
+  {c:"INI 326",s:"Dysli",n:"Academic Communication English",cats:["3"],p:"Evelyn Dysli",m:[[0,4],[4,4]]},
+  {c:"INI 326",s:"Pino",n:"Academic Communication English",cats:["3"],p:"Teresa Pino",m:[[0,5],[2,6]]},
+  {c:"INI 327",s:"A",n:"Taller de Perfil UV 2",cats:["3"],p:"Marlen Piña",m:[[2,5]]},
+  {c:"INI 327",s:"B",n:"Taller de Perfil UV 2",cats:["3"],p:"Carol Altamirano",m:[[3,5]]},
+  {c:"INI 327",s:"C",n:"Taller de Perfil UV 2",cats:["3"],p:"Carol Altamirano",m:[[3,6]]},
+  {c:"INI 317",s:"Ú",n:"Prácticas Intermedias",cats:["3"],p:"Marlen Piña",m:[[1,5]]},
+  // 4.º AÑO
+  {c:"INI 421",s:"A",n:"Integración Comercial Internacional",cats:["4"],p:"Carla Henríquez",m:[[0,1],[0,2]]},
+  {c:"INI 421",s:"B",n:"Integración Comercial Internacional",cats:["4"],p:"Rodrigo Astudillo",m:[[2,6],[3,6]]},
+  {c:"INI 422",s:"A",n:"Marketing Internacional y Global",cats:["4"],p:"Gonzalo Castillejo",m:[[3,2],[2,4]]},
+  {c:"INI 422",s:"B",n:"Marketing Internacional y Global",cats:["4"],p:"Gonzalo Castillejo",m:[[2,2],[3,4]]},
+  {c:"INI 423",s:"A",n:"Formulación y Evaluación de Proyectos",cats:["4"],p:"Ignacio Belaustegui",m:[[4,5],[4,6]]},
+  {c:"INI 423",s:"B",n:"Formulación y Evaluación de Proyectos",cats:["4"],p:"Ignacio Belaustegui",m:[[4,4],[1,6]]},
+  {c:"INI 424",s:"A",n:"Transporte y Distribución Internacional",cats:["4"],p:"Juan E. Figueroa",m:[[2,5],[2,6]]},
+  {c:"INI 424",s:"B",n:"Transporte y Distribución Internacional",cats:["4"],p:"Juan E. Figueroa",m:[[1,4],[1,5]]},
+  {c:"INI 425",s:"A",n:"Gestión Bancaria Internacional",cats:["4"],p:"José Collao",m:[[1,4],[1,5]]},
+  {c:"INI 425",s:"B",n:"Gestión Bancaria Internacional",cats:["4"],p:"José Collao",m:[[0,3],[0,4]]},
+  {c:"INI 426",s:"A",n:"English for Foreign Trade",cats:["4"],p:"Teresa Pino",m:[[3,3],[1,6]]},
+  {c:"INI 426",s:"B",n:"English for Foreign Trade",cats:["4"],p:"Teresa Pino",m:[[2,5],[3,5]]},
+  {c:"INI 427",s:"A",n:"Simulación de Negocios II",cats:["4"],p:"Fabiola Jeldes / Daniel Cáceres / Gino Astorga",m:[[2,1],[2,2]],sim:true},
+  {c:"INI 427",s:"B",n:"Simulación de Negocios II",cats:["4"],p:"Fabiola Jeldes / Gino Astorga",m:[[1,1],[1,2]],sim:true},
+  {c:"INI 427",s:"C",n:"Simulación de Negocios II",cats:["4"],p:"Gino Astorga / Fabiola Jeldes / Daniel Cáceres",m:[[3,1],[2,3]],sim:true},
+  // 5.º AÑO
+  {c:"INI 521",s:"Ú",n:"Práctica Profesional",cats:["5"],p:"Juan G. Inostroza",m:[[1,2],[2,4],[0,6]]},
+  {c:"INI 522",s:"Ú",n:"Seminario de Título",cats:["5"],p:"Lisardo Gómez / Adriana Latorre / D. De Luca",m:[[0,2],[0,3]]},
+  {c:"INI 523",s:"EMP",n:"Curso de Especialización II (EMP)",cats:["5"],p:"Sebastián Vera",m:[[2,1],[2,2]]},
+  {c:"INI 523",s:"RIC",n:"Curso de Especialización II (RIC)",cats:["5"],p:"Christian Ramírez",m:[[3,1],[3,2]]},
+  {c:"INI 512",s:"Ú",n:"Electivo de Actualización",cats:["5","R"],p:"Jorge Catalán / Gino Astorga",m:[[1,4],[3,4]],note:"El horario de repitencia lo muestra en el bloque 5 (15:35–17:05). Verifica con tu sección."},
+  // REPITENCIA
+  {c:"INI 316",s:"Ú",n:"Inglés IV",cats:["R"],p:"P. Fernández",m:[[0,1],[4,3]]},
+  {c:"INI 216",s:"A",n:"Inglés II",cats:["R"],p:"P. Fernández",m:[[3,3],[1,6],[2,6]]},
+  {c:"INI 216",s:"B",n:"Inglés II",cats:["R"],p:"Juan G. Inostroza",m:[[2,2],[1,4],[0,5]]},
+  {c:"INI 114",s:"Ú",n:"Álgebra",cats:["R"],p:"M. E. Saavedra",m:[[0,4],[2,4],[4,4]]},
+  {c:"INI 214",s:"Ú",n:"Cálculo II",cats:["R"],p:"M. Cuevas",m:[[4,5],[0,6]]}
+];
+const PROTEGIDOS={ "1":[[1,3]], "5":[[1,3]] };
+
+// Requisitos (desde requisitos_ramos.csv): [año, código, nombre, PRE, POST]
+const REQ_RAW=[
+ [1,"INI124","CÁLCULO","INI114 - ALGEBRA","INI224 - ESTADÍSTICA PARA LOS NEGOCIOS | INI225 - MICROECONOMÍA | INI317 - PRÁCTICAS INTERMEDIAS"],
+ [1,"INI125","SISTEMAS DE INFORMACIÓN I","INI113 - INFORMÁTICA PARA LOS NEGOCIOS","INI311 - SISTEMAS DE INFORMACIÓN II"],
+ [1,"INI126","INGLÉS I","INI117 - HABILIDADES COMUNICACIONALES","INI216 - INGLÉS II"],
+ [2,"INI211","PERSONAS Y ORGANIZACIONES","INI112 - GESTIÓN DE ORGANIZACIONES | INI123 - PSICOLOGÍA SOCIAL Y ORGANIZACIONAL","INI221 - SIMULACIÓN DE NEGOCIOS"],
+ [2,"INI212","MARKETING ESTRATÉGICO","INI112 - GESTIÓN DE ORGANIZACIONES","INI221 - SIMULACIÓN DE NEGOCIOS | INI222 - MARKETING OPERATIVO | INI414 - METODOLOGÍA DE INVESTIGACIÓN DE NEGOCIOS INTERNACIONALES | FFF2928"],
+ [2,"INI213","CONTABILIDAD FINANCIERA","INI112 - GESTIÓN DE ORGANIZACIONES | INI114 - ALGEBRA","INI221 - SIMULACIÓN DE NEGOCIOS | INI223 - CONTABILIDAD ADMINISTRATIVA"],
+ [2,"INI214","CÁLCULO II","INI114 - ALGEBRA","INI314 - MÉTODOS CUANTITATIVOS"],
+ [2,"INI215","DERECHO EMPRESARIAL","INI115 - POLÍTICA Y FORMACIÓN CIUDADANA","INI325 - DERECHO COMERCIAL INTERNACIONAL"],
+ [2,"INI216","INGLÉS II","INI126 - INGLÉS I","INI226 - INGLÉS III"],
+ [2,"INI221","SIMULACIÓN DE NEGOCIOS","INI211 - PERSONAS Y ORGANIZACIONES | INI212 - MARKETING ESTRATÉGICO | INI213 - CONTABILIDAD FINANCIERA","INI317 - PRÁCTICAS INTERMEDIAS | INI321 - TEORÍA DEL CONFLICTO Y NEGOCIACIÓN | FFF2926"],
+ [2,"INI222","MARKETING OPERATIVO","INI212 - MARKETING ESTRATÉGICO",""],
+ [2,"INI223","CONTABILIDAD ADMINISTRATIVA","INI213 - CONTABILIDAD FINANCIERA","INI313 - GESTIÓN FINANCIERA | INI317 - PRÁCTICAS INTERMEDIAS | INI324 - GESTIÓN DE OPERACIONES"],
+ [2,"INI224","ESTADÍSTICA PARA LOS NEGOCIOS","INI124 - CÁLCULO","INI314 - MÉTODOS CUANTITATIVOS | INI414 - METODOLOGÍA DE INVESTIGACIÓN DE NEGOCIOS INTERNACIONALES"],
+ [2,"INI225","MICROECONOMÍA","INI124 - CÁLCULO","INI323 - MACROECONOMÍA"],
+ [2,"INI226","INGLÉS III","INI216 - INGLÉS II","INI316 - INGLÉS IV | INI415 - NEGOCIACIONES INTERNACIONALES"],
+ [3,"INI311","SISTEMAS DE INFORMACIÓN II","INI125 - SISTEMAS DE INFORMACIÓN I","INI427 - SIMULACIÓN DE NEGOCIOS II"],
+ [3,"INI312","COMERCIO INTERNACIONAL","INI111 - INTRODUCCIÓN A LOS NEGOCIOS INTERNACIONALES | INI121 - HISTORIA DE LAS RELACIONES INTERNACIONALES | INI122 - GEOGRAFÍA POLÍTICA Y ECONÓMICA","INI322 - GESTIÓN ADUANERA Y DOCUMENTAL | INI325 - DERECHO COMERCIAL INTERNACIONAL"],
+ [3,"INI313","GESTIÓN FINANCIERA","INI223 - CONTABILIDAD ADMINISTRATIVA","INI411 - FINANZAS CORPORATIVAS"],
+ [3,"INI314","MÉTODOS CUANTITATIVOS","INI214 - CÁLCULO II | INI224 - ESTADÍSTICA PARA LOS NEGOCIOS","INI324 - GESTIÓN DE OPERACIONES"],
+ [3,"INI316","INGLÉS IV","INI226 - INGLÉS III","INI326 - ACADEMIC COMMUNICATIONAL ENGLISH | INI416 - ENGLISH FOR INTERNATIONAL MANAGEMENT | INI426 - ENGLISH FOR FOREIGN TRADE | INI427 - SIMULACIÓN DE NEGOCIOS II"],
+ [3,"INI317","PRÁCTICAS INTERMEDIAS","INI124 - CÁLCULO | INI221 - SIMULACIÓN DE NEGOCIOS | INI223 - CONTABILIDAD ADMINISTRATIVA",""],
+ [3,"INI321","TEORÍA DEL CONFLICTO Y NEGOCIACIÓN","INI221 - SIMULACIÓN DE NEGOCIOS","INI415 - NEGOCIACIONES INTERNACIONALES | INI521 - PRÁCTICA PROFESIONAL"],
+ [3,"INI322","GESTIÓN ADUANERA Y DOCUMENTAL","INI312 - COMERCIO INTERNACIONAL","INI412 - LOGÍSTICA Y SEGUROS INTERNACIONALES | INI425 - GESTIÓN BANCARIA INTERNACIONAL | INI521 - PRÁCTICA PROFESIONAL"],
+ [3,"INI323","MACROECONOMÍA","INI225 - MICROECONOMÍA","INI413 - ECONOMÍA INTERNACIONAL | INI427 - SIMULACIÓN DE NEGOCIOS II | INI521 - PRÁCTICA PROFESIONAL"],
+ [3,"INI324","GESTIÓN DE OPERACIONES","INI223 - CONTABILIDAD ADMINISTRATIVA | INI314 - MÉTODOS CUANTITATIVOS","INI424 - TRANSPORTE Y DISTRIBUCIÓN INTERNACIONAL | INI521 - PRÁCTICA PROFESIONAL"],
+ [3,"INI325","DERECHO COMERCIAL INTERNACIONAL","INI215 - DERECHO EMPRESARIAL | INI312 - COMERCIO INTERNACIONAL","INI421 - INTEGRACIÓN COMERCIAL INTERNACIONAL | INI521 - PRÁCTICA PROFESIONAL"],
+ [3,"INI326","ACADEMIC COMMUNICATIONAL ENGLISH","INI316 - INGLÉS IV","INI521 - PRÁCTICA PROFESIONAL"],
+ [4,"INI411","FINANZAS CORPORATIVAS","INI313 - GESTIÓN FINANCIERA","INI423 - FORMULACIÓN Y EVALUACIÓN DE PROYECTOS | INI512 - ELECTIVO DE ACTUALIZACIÓN | INI513 - FINANZAS INTERNACIONALES"],
+ [4,"INI412","LOGÍSTICA Y SEGUROS INTERNACIONALES","INI322 - GESTIÓN ADUANERA Y DOCUMENTAL","INI424 - TRANSPORTE Y DISTRIBUCIÓN INTERNACIONAL | INI512 - ELECTIVO DE ACTUALIZACIÓN"],
+ [4,"INI413","ECONOMÍA INTERNACIONAL","INI323 - MACROECONOMÍA","INI512 - ELECTIVO DE ACTUALIZACIÓN | INI514 - ANÁLISIS DE ENTORNO Y COYUNTURA"],
+ [4,"INI414","METODOLOGÍA DE INVESTIGACIÓN DE NEGOCIOS INTERNACIONALES","INI212 - MARKETING ESTRATÉGICO | INI224 - ESTADÍSTICA PARA LOS NEGOCIOS","INI422 - MARKETING INTERNACIONAL Y GLOBAL | INI427 - SIMULACIÓN DE NEGOCIOS II | INI512 - ELECTIVO DE ACTUALIZACIÓN"],
+ [4,"INI415","NEGOCIACIONES INTERNACIONALES","INI226 - INGLÉS III | INI321 - TEORÍA DEL CONFLICTO Y NEGOCIACIÓN","INI512 - ELECTIVO DE ACTUALIZACIÓN | FFF2928 | INI515 - FORMACIÓN CIUDADANA GLOBAL"],
+ [4,"INI416","ENGLISH FOR INTERNATIONAL MANAGEMENT","INI316 - INGLÉS IV","INI512 - ELECTIVO DE ACTUALIZACIÓN"],
+ [4,"INI421","INTEGRACIÓN COMERCIAL INTERNACIONAL","INI325 - DERECHO COMERCIAL INTERNACIONAL","INI511 - DIRECCIÓN Y GESTIÓN INTERNACIONAL | INI514 - ANÁLISIS DE ENTORNO Y COYUNTURA"],
+ [4,"INI422","MARKETING INTERNACIONAL Y GLOBAL","INI414 - METODOLOGÍA DE INVESTIGACIÓN DE NEGOCIOS INTERNACIONALES","INI511 - DIRECCIÓN Y GESTIÓN INTERNACIONAL"],
+ [4,"INI423","FORMULACIÓN Y EVALUACIÓN DE PROYECTOS","INI411 - FINANZAS CORPORATIVAS","INI511 - DIRECCIÓN Y GESTIÓN INTERNACIONAL"],
+ [4,"INI424","TRANSPORTE Y DISTRIBUCIÓN INTERNACIONAL","INI324 - GESTIÓN DE OPERACIONES | INI412 - LOGÍSTICA Y SEGUROS INTERNACIONALES",""],
+ [4,"INI425","GESTIÓN BANCARIA INTERNACIONAL","INI322 - GESTIÓN ADUANERA Y DOCUMENTAL",""],
+ [4,"INI426","ENGLISH FOR FOREIGN TRADE","INI316 - INGLÉS IV",""],
+ [4,"INI427","SIMULACIÓN DE NEGOCIOS II","INI414 - METODOLOGÍA DE INVESTIGACIÓN DE NEGOCIOS INTERNACIONALES | INI323 - MACROECONOMÍA | INI311 - SISTEMAS DE INFORMACIÓN II | INI316 - INGLÉS IV","INI522 - SEMINARIO DE TÍTULO"],
+ [5,"INI511","DIRECCIÓN Y GESTIÓN INTERNACIONAL","INI421 - INTEGRACIÓN COMERCIAL INTERNACIONAL | INI422 - MARKETING INTERNACIONAL Y GLOBAL | INI423 - FORMULACIÓN Y EVALUACIÓN DE PROYECTOS",""],
+ [5,"INI512","ELECTIVO DE ACTUALIZACIÓN","INI411 - FINANZAS CORPORATIVAS | INI412 - LOGÍSTICA Y SEGUROS INTERNACIONALES | INI413 - ECONOMÍA INTERNACIONAL | INI414 - METODOLOGÍA DE INVESTIGACIÓN DE NEGOCIOS INTERNACIONALES | INI415 - NEGOCIACIONES INTERNACIONALES | INI416 - ENGLISH FOR INTERNATIONAL MANAGEMENT | INI417 - TALLER PERFIL UV 3",""],
+ [5,"INI513","FINANZAS INTERNACIONALES","INI411 - FINANZAS CORPORATIVAS",""],
+ [5,"INI514","ANÁLISIS DE ENTORNO Y COYUNTURA","INI413 - ECONOMÍA INTERNACIONAL | INI421 - INTEGRACIÓN COMERCIAL INTERNACIONAL",""],
+ [5,"INI515","FORMACIÓN CIUDADANA GLOBAL","INI415 - NEGOCIACIONES INTERNACIONALES",""],
+ [5,"INI521","PRÁCTICA PROFESIONAL","INI321 - TEORÍA DEL CONFLICTO Y NEGOCIACIÓN | INI322 - GESTIÓN ADUANERA Y DOCUMENTAL | INI323 - MACROECONOMÍA | INI324 - GESTIÓN DE OPERACIONES | INI325 - DERECHO COMERCIAL INTERNACIONAL | INI326 - ACADEMIC COMMUNICATIONAL ENGLISH | INI327 - TALLER PERFIL UV 2",""],
+ [5,"INI522","SEMINARIO DE TÍTULO","INI427 - SIMULACIÓN DE NEGOCIOS II",""]
+];
+
+/* Construir mapa de cursos (malla) para requisitos */
+const norm = c => (c||"").replace(/\s+/g,"").toUpperCase();
+const COURSES={}; // code -> {code,name,year,pre:[codes],post:[codes]}
+function parseRefs(str){ // "INI114 - ALGEBRA | INI224 - ..." -> [{code,name}]
+  if(!str) return [];
+  return str.split("|").map(s=>{
+    const t=s.trim(); const idx=t.indexOf(" - ");
+    const code=norm(idx>=0?t.slice(0,idx):t);
+    const name=idx>=0?t.slice(idx+3).trim():"";
+    return {code,name};
+  }).filter(x=>x.code);
+}
+function yearFromCode(code){ const m=code.match(/INI(\d)/); if(m) return +m[1]; return 0; }
+REQ_RAW.forEach(([a,c,n,pre,post])=>{
+  const code=norm(c);
+  COURSES[code]={code,name:n,year:a,pre:parseRefs(pre).map(x=>x.code),post:parseRefs(post).map(x=>x.code)};
+});
+// añadir cursos sólo referenciados (para poder marcarlos como aprobados)
+REQ_RAW.forEach(([a,c,n,pre,post])=>{
+  parseRefs(pre).concat(parseRefs(post)).forEach(({code,name})=>{
+    if(!COURSES[code]) COURSES[code]={code,name:name||code,year:yearFromCode(code)||0,pre:[],post:[]};
+  });
+});
+// Ramos de la malla oficial que el CSV de requisitos no trae (para que «Mi avance» esté completo)
+[[1,"INI116","AUTOCONOCIMIENTO"],[3,"INI315","TALLER PERFIL UV 1"]].forEach(([a,c,n])=>{
+  if(!COURSES[c]) COURSES[c]={code:c,name:n,year:a,pre:[],post:[]};
+});
+function reqFor(baseCode){ return COURSES[norm(baseCode)]; }
+
+/* Créditos oficiales (simulador académico UV) — fijos, no editables */
+const CRED={
+ INI111:5,INI112:5,INI113:5,INI114:6,INI115:3,INI116:3,INI117:4,
+ INI121:5,INI122:5,INI123:5,INI124:5,INI125:4,INI126:5,
+ INI211:5,INI212:5,INI213:5,INI214:5,INI215:4,INI216:5,
+ INI221:7,INI222:5,INI223:5,INI224:5,INI225:5,INI226:5,
+ INI311:4,INI312:5,INI313:5,INI314:5,INI315:2,INI316:5,INI317:4,
+ INI321:5,INI322:5,INI323:5,INI324:5,INI325:4,INI326:4,INI327:2,
+ INI411:5,INI412:5,INI413:4,INI414:5,INI415:4,INI416:4,INI417:2,
+ INI421:4,INI422:4,INI423:5,INI424:5,INI425:5,INI426:4,INI427:5,
+ INI511:5,INI512:4,INI513:5,INI514:5,INI515:3,INI521:16,INI522:12,
+ INI523:5
+};
+
+/* Estimaciones de viaje al campus (Viña del Mar) — referenciales, editables por el usuario */
+const ORIGENES={
+ "Viña del Mar":{t:20,c:500},"Reñaca":{t:25,c:600},"Valparaíso":{t:35,c:500},
+ "Concón":{t:35,c:700},"Quilpué":{t:35,c:700},"Villa Alemana":{t:50,c:900},
+ "Limache":{t:65,c:1300},"Olmué":{t:80,c:1800},"Quillota":{t:75,c:2600},
+ "La Cruz":{t:85,c:2900},"La Calera":{t:95,c:3200},"Casablanca":{t:70,c:2600},
+ "San Antonio":{t:110,c:3500},"Los Andes":{t:120,c:4000},"Otro":{t:45,c:1500}
+};
+const RENT_PIEZA=170000, RENT_DEPTO=380000;
+const UNIV_ADDR="Alcalde Prieto Nieto 452, Viña del Mar, Chile";
+const FEEDBACK_URL="https://forms.cloud.microsoft/r/CtJnfVGwJW";
+const fmtCLP=n=>Math.round(n).toLocaleString("es-CL");
+const parseHM=s=>{const[a,b]=s.split(":").map(Number);return a*60+b;};
+const fmtHM=m=>{m=Math.max(0,Math.round(m));const h=Math.floor(m/60)%24,mi=m%60;return String(h).padStart(2,"0")+":"+String(mi).padStart(2,"0");};
+
+/* ============ ESTADO ============ */
+const LS_KEY="tomaRamosUV_v2";
+let state={ sel:[], credits:{}, overload:false, filter:"2", custom:[], approved:[], travel:null, onboarded:false,
+  settings:{theme:"auto",accent:"#1f4bd8",font:14,colorBySubject:true,reqActive:false} };
+const secId=x=>x.c+"-"+x.s;
+const baseName={}; SECCIONES.forEach(x=>baseName[x.c]=x.n);
+
+function load(){
+  try{ const raw=localStorage.getItem(LS_KEY)||localStorage.getItem("tomaRamosUV_v1");
+    if(raw){ const d=JSON.parse(raw); state=Object.assign(state,d); state.settings=Object.assign({theme:"auto",accent:"#1f4bd8",font:14,colorBySubject:true,reqActive:false},d.settings||{}); }
+  }catch(e){}
+  state.custom=state.custom||[]; state.approved=state.approved||[];
+  if(!state.filter) state.filter="2";
+}
+function save(){ localStorage.setItem(LS_KEY, JSON.stringify(state)); }
+function creditsFor(code){ const c=CRED[norm(code)]; return c!=null?c:5; }
+
+/* ============ COLOR ============ */
+function isDark(){ return document.documentElement.getAttribute("data-theme")==="dark"; }
+// Índice estable por asignatura → colores distintos y bien separados (ángulo áureo)
+const CODE_INDEX={}; (function(){ let i=0; SECCIONES.forEach(x=>{ if(!(x.c in CODE_INDEX)) CODE_INDEX[x.c]=i++; }); })();
+function hueFor(code){
+  let idx=CODE_INDEX[code];
+  if(idx==null){ let h=0; for(let i=0;i<code.length;i++) h=(h*31+code.charCodeAt(i))%997; idx=h; }
+  return Math.round((idx*137.508)%360);
+}
+function evColors(code){
+  if(!state.settings.colorBySubject){
+    const a=state.settings.accent;
+    return {bg:hexToRgba(a,isDark()?0.28:0.14), bd:a, ink:isDark()?"#dfe7ff":shade(a,-0.15)};
+  }
+  const h=hueFor(code);
+  if(isDark()) return {bg:`hsl(${h},40%,26%)`,bd:`hsl(${h},62%,60%)`,ink:`hsl(${h},82%,83%)`};
+  return {bg:`hsl(${h},72%,90%)`,bd:`hsl(${h},58%,42%)`,ink:`hsl(${h},62%,27%)`};
+}
+function hexToRgba(hex,a){ const n=hex.replace("#",""); const r=parseInt(n.slice(0,2),16),g=parseInt(n.slice(2,4),16),b=parseInt(n.slice(4,6),16); return `rgba(${r},${g},${b},${a})`; }
+function shade(hex,pct){ const n=hex.replace("#",""); let r=parseInt(n.slice(0,2),16),g=parseInt(n.slice(2,4),16),b=parseInt(n.slice(4,6),16); const t=pct<0?0:255; const p=Math.abs(pct); r=Math.round((t-r)*p)+r; g=Math.round((t-g)*p)+g; b=Math.round((t-b)*p)+b; return "#"+[r,g,b].map(v=>v.toString(16).padStart(2,"0")).join(""); }
+
+/* ============ ITEMS (secciones + ayudantías) ============ */
+function getSec(id){ return SECCIONES.find(x=>secId(x)===id); }
+function customItem(cu){ return {id:cu.id,kind:"ayu",c:cu.id,n:cu.name,s:"",p:[cu.prof,cu.room].filter(Boolean).join(" · "),m:cu.blocks.map(b=>[cu.day,b]),color:cu.color}; }
+function placedItems(){
+  const items=state.sel.map(id=>{const x=getSec(id);return x?{id,kind:"sec",c:x.c,n:x.n,s:x.s,p:x.p,m:x.m,sim:x.sim}:null;}).filter(Boolean);
+  state.custom.forEach(cu=>items.push(customItem(cu)));
+  return items;
+}
+function itemColors(it){ if(it.kind==="ayu"){ const c=it.color||"#6b7280"; return {bg:hexToRgba(c,isDark()?0.3:0.16),bd:c,ink:isDark()?"#e7ecf5":shade(c,-0.2)}; } return evColors(it.c); }
+function whenText(m){ return m.map(([d,b])=>`${DIAS_CORTO[d]} ${BLOQUES[b-1].ini}`).join(" · "); }
+function subjectsByCat(cat){ const codes=[]; SECCIONES.forEach(x=>{ if(x.cats.includes(cat)&&!codes.includes(x.c)) codes.push(x.c); }); return codes; }
+function sectionsOf(code){ return SECCIONES.filter(x=>x.c===code); }
+
+/* ============ TOPES ============ */
+function conflictMap(items){ const map={}; items.forEach(it=>it.m.forEach(([d,b])=>{const k=d+"-"+b;(map[k]=map[k]||[]).push(it);})); return map; }
+function conflicts(items){ const map=conflictMap(items); const set=new Set(); const pairs=[];
+  Object.keys(map).forEach(k=>{ if(map[k].length>1){ map[k].forEach(it=>set.add(it.id)); const [d,b]=k.split("-").map(Number); pairs.push({d,b,items:map[k].slice()}); } });
+  return {clash:set,pairs};
+}
+function clashesWithSelection(id){
+  const x=getSec(id); const others=placedItems().filter(it=>it.id!==id && !(it.kind==="sec"&&getSec(it.id).c===x.c));
+  for(const it of others) for(const [d,b] of x.m) for(const [d2,b2] of it.m) if(d===d2&&b===b2) return true;
+  return false;
+}
+
+/* ============ REQUISITOS ============ */
+function missingPrereqs(baseCode){
+  const r=reqFor(baseCode); if(!r||!r.pre.length) return [];
+  const appr=new Set(state.approved.map(norm));
+  return r.pre.filter(pc=>!appr.has(pc));
+}
+function reqActive(){ return state.settings.reqActive && state.approved.length>0; }
+
+/* ============ RENDER ============ */
+function renderFilters(){
+  const host=document.getElementById("yearFilters"); host.innerHTML="";
+  [{id:"todos",label:"Todos"}].concat(CATS).forEach(c=>{
+    const b=document.createElement("button");
+    b.className="chip-year"+(state.filter===c.id?" active":"");
+    b.textContent=c.label;
+    b.onclick=()=>{ state.filter=c.id; save(); renderFilters(); renderCatalog(); };
+    host.appendChild(b);
+  });
+}
+let openSubjects={}, justAddedId=null, justOpened=null;
+function toggleSubject(wrap,sec,code){
+  const opening=!wrap.classList.contains("open");
+  if(opening){
+    openSubjects[code]=true; wrap.classList.add("open");
+    sec.style.maxHeight=sec.scrollHeight+"px";
+    const done=e=>{ if(e.propertyName==="max-height"){ if(wrap.classList.contains("open")) sec.style.maxHeight="none"; sec.removeEventListener("transitionend",done); } };
+    sec.addEventListener("transitionend",done);
+  } else {
+    openSubjects[code]=false;
+    sec.style.maxHeight=sec.scrollHeight+"px"; void sec.offsetHeight;
+    wrap.classList.remove("open");
+    requestAnimationFrame(()=>{ sec.style.maxHeight="0px"; });
+  }
+}
+function renderCatalog(){
+  const host=document.getElementById("catList");
+  const q=(document.getElementById("searchBox").value||"").toLowerCase().trim();
+  host.innerHTML="";
+  let codes;
+  if(state.filter==="todos"){ codes=[]; SECCIONES.forEach(x=>{ if(!codes.includes(x.c)) codes.push(x.c); }); }
+  else codes=subjectsByCat(state.filter);
+  codes=codes.filter(code=>!q||code.toLowerCase().includes(q)||(baseName[code]||"").toLowerCase().includes(q));
+  if(!codes.length){ host.innerHTML='<p class="sel-empty" style="padding:12px">Sin resultados.</p>'; return; }
+
+  codes.forEach(code=>{
+    const secs=sectionsOf(code);
+    const nSel=secs.filter(x=>state.sel.includes(secId(x))).length;
+    const miss=reqActive()?missingPrereqs(code):[];
+    const wrap=document.createElement("div");
+    const isOpen=openSubjects[code]||!!q;
+    wrap.className="subj"+(isOpen?" open":"");
+    const head=document.createElement("div"); head.className="subj-head";
+    const ec=evColors(code);
+    head.innerHTML=`
+      <span class="subj-dot" style="background:${ec.bd}"></span>
+      <div class="subj-name"><span class="subj-code">${code}</span><br><span>${baseName[code]}</span></div>
+      <span class="subj-meta">${creditsFor(code)} cr · ${secs.length} secc.${nSel?` · <b style="color:var(--ok)">✓${nSel}</b>`:""}${miss.length?`<br><span class="lockmini" style="color:var(--bad)">🔒 falta req.</span>`:(reqActive()?`<br><span class="lockmini" style="color:var(--ok)">✓ req. al día</span>`:"")}</span>
+      <span class="caret">▶</span>`;
+    head.onclick=()=>toggleSubject(wrap,secBox,code);
+    wrap.appendChild(head);
+
+    const secBox=document.createElement("div"); secBox.className="sections"; if(isOpen) secBox.style.maxHeight="none";
+    // requisitos info
+    const r=reqFor(code);
+    const reqBox=document.createElement("div"); reqBox.className="req-box";
+    const appr=new Set(state.approved.map(norm));
+    let preHtml='<span class="muted">Sin información de requisitos.</span>', postHtml="";
+    if(r){
+      preHtml = r.pre.length? r.pre.map(pc=>{const cc=COURSES[pc]; const ok=appr.has(pc); return `<span class="req-tag ${ok?'ok':(reqActive()?'no':'')}">${ok?'✓':'•'} ${cc?cc.code+' '+cc.name:pc}</span>`;}).join("") : '<span class="muted">Sin prerrequisitos.</span>';
+      postHtml = r.post.length? `<div class="rl"><b>Abre:</b> ${r.post.map(pc=>{const cc=COURSES[pc];return `<span class="req-tag">${cc?cc.code:pc}</span>`;}).join("")}</div>` : "";
+    }
+    reqBox.innerHTML=`<div class="rl"><b>Requisitos (PRE):</b><br>${preHtml}</div>${postHtml}`;
+    secBox.appendChild(reqBox);
+
+    const ce=document.createElement("div"); ce.className="cred-edit";
+    ce.innerHTML=`<b style="color:var(--ink)">Créditos:</b>&nbsp;${creditsFor(code)}&nbsp;<span style="opacity:.7">· oficial (simulador UV)</span>`;
+    secBox.appendChild(ce);
+
+    secs.forEach(x=>{
+      const id=secId(x); const added=state.sel.includes(id); const clash=!added&&clashesWithSelection(id);
+      const row=document.createElement("div"); row.className="sec";
+      row.innerHTML=`<div class="sec-info">
+          <div class="sec-title">Sección ${x.s}</div>
+          <div class="sec-when">${whenText(x.m)}</div>
+          <div class="sec-prof">Prof. ${x.p}</div>
+          ${x.note?`<div class="sec-when" style="color:var(--warn)">⚠ ${x.note}</div>`:""}
+        </div>`;
+      const btn=document.createElement("button");
+      btn.className="add-btn"+(added?" added":"")+(clash?" conflict":"");
+      btn.textContent=added?"✓ Tomado":(clash?"Agregar (tope)":"Agregar");
+      btn.onclick=e=>{ e.stopPropagation(); toggle(id); };
+      row.appendChild(btn); secBox.appendChild(row);
+    });
+    wrap.appendChild(secBox); host.appendChild(wrap);
+  });
+}
+
+function renderGrid(){
+  const host=document.getElementById("gridHost");
+  const items=placedItems();
+  const cmap=conflictMap(items); const clashSet=conflicts(items).clash;
+  let html='<table class="grid"><thead><tr><th class="col-time">Bloque</th>';
+  DIAS.forEach((d,i)=>html+=`<th><span class="d-full">${d}</span><span class="d-short">${DIAS_CORTO[i]}</span></th>`); html+='</tr></thead><tbody>';
+  BLOQUES.forEach(bl=>{ const b=bl.n;
+    html+=`<tr><td class="time-cell"><span class="bn">${b}</span>${bl.ini}<br>${bl.fin}</td>`;
+    for(let d=0;d<5;d++){ const k=d+"-"+b; const its=cmap[k]||[];
+      html+='<td class="slot">';
+      if(its.length){ html+='<div class="stack">';
+        its.forEach(it=>{ const c=itemColors(it); const isClash=its.length>1||clashSet.has(it.id);
+          html+=`<div class="ev${isClash?' clash':''}${it.kind==='ayu'?' ayu':''}${it.id===justAddedId?' pop':''}" style="background:${c.bg};border-left-color:${c.bd};color:${c.ink}">
+            <span class="ex" data-rm="${it.id}" data-kind="${it.kind}" title="Quitar">×</span>
+            <span class="ec">${it.kind==='ayu'?'Ayudantía':(it.c+' · '+it.s)}</span>
+            <span class="en">${it.n}</span>
+            ${it.p?`<span class="ep">${it.kind==='ayu'?'':'Prof. '}${it.p}</span>`:''}</div>`;
+        });
+        html+='</div>';
+      } else { let prot=false; Object.keys(PROTEGIDOS).forEach(cat=>PROTEGIDOS[cat].forEach(([pd,pb])=>{if(pd===d&&pb===b)prot=true;}));
+        if(prot) html+='<div class="ev protected"><span class="en">Horario protegido</span></div>'; }
+      html+='</td>';
+    }
+    html+='</tr>';
+  });
+  html+='</tbody></table>'; host.innerHTML=html;
+  host.querySelectorAll("[data-rm]").forEach(el=>el.onclick=()=>{ el.getAttribute("data-kind")==="ayu"?removeCustom(el.getAttribute("data-rm")):toggle(el.getAttribute("data-rm")); });
+}
+
+function renderSelection(){
+  const host=document.getElementById("selList"); host.innerHTML="";
+  const items=placedItems();
+  if(!items.length){ host.innerHTML='<p class="sel-empty">Aún no has tomado ramos. Agrégalos desde el catálogo, usa el optimizador o añade una ayudantía.</p>'; return; }
+  const secs=items.filter(i=>i.kind==="sec").sort((a,b)=>a.id.localeCompare(b.id));
+  const ayus=items.filter(i=>i.kind==="ayu");
+  secs.concat(ayus).forEach(it=>{
+    const c=itemColors(it); const item=document.createElement("div"); item.className="sel-item";
+    item.innerHTML=`<span class="sd" style="background:${c.bd}"></span>
+      <div class="st"><b>${it.n}</b><span>${it.kind==='ayu'?'Ayudantía':(it.c+' · Secc. '+it.s)} · ${whenText(it.m)}${it.p?' · '+it.p:''}</span></div>`;
+    const rm=document.createElement("button"); rm.className="rm"; rm.textContent="Quitar";
+    rm.onclick=()=> it.kind==="ayu"?removeCustom(it.id):toggle(it.id);
+    item.appendChild(rm); host.appendChild(item);
+  });
+}
+
+function renderAlerts(){
+  const host=document.getElementById("alerts"); host.innerHTML="";
+  const items=placedItems(); const {pairs}=conflicts(items);
+  if(pairs.length){
+    const div=document.createElement("div"); div.className="banner bad";
+    const lines=pairs.map(p=>{ const names=p.items.map(it=>it.kind==="ayu"?"Ayudantía":it.c+"·"+it.s).join(" ⨯ ");
+      return `${DIAS[p.d]} bloque ${p.b} (${BLOQUES[p.b-1].ini}): ${names}`; }).join("<br>");
+    div.innerHTML=`<span>⛔</span><div><b>Tope de horario (${pairs.length})</b>${lines}</div>`; host.appendChild(div);
+  }
+  const total=totalCredits();
+  if(!state.overload&&total>30){ const div=document.createElement("div"); div.className="banner warn";
+    div.innerHTML=`<span>⚠️</span><div><b>Superas los 30 créditos (${total})</b>El sistema oficial no deja pasar de 30. Activa <b>Sobrecarga</b> si tienes autorización, o reduce ramos.</div>`; host.appendChild(div);
+  } else if(state.overload&&total>30){ const div=document.createElement("div"); div.className="banner warn";
+    div.innerHTML=`<span>📋</span><div><b>Sobrecarga: ${total} créditos</b>Requiere autorización de la Escuela.</div>`; host.appendChild(div); }
+  // requisitos pendientes en la selección
+  if(reqActive()){
+    const bad=[]; const codes=new Set(state.sel.map(id=>getSec(id).c));
+    codes.forEach(code=>{ const miss=missingPrereqs(code); if(miss.length) bad.push({code,miss}); });
+    if(bad.length){ const div=document.createElement("div"); div.className="banner bad";
+      div.innerHTML=`<span>🔒</span><div><b>Requisitos pendientes</b>${bad.map(b=>`${b.code} necesita: ${b.miss.map(mc=>COURSES[mc]?COURSES[mc].name:mc).join(", ")}`).join("<br>")}</div>`; host.appendChild(div); }
+  }
+  const sims=state.sel.map(getSec).filter(x=>x&&x.sim);
+  if(sims.length){ const codes=[...new Set(sims.map(x=>x.c))].join(" y ");
+    const div=document.createElement("div"); div.className="banner ok";
+    div.innerHTML=`<span>💡</span><div><b>Simulación de Negocios (${codes})</b>Inscríbela <b>al final</b> por “Modificación de Asignaturas”. <span class="lnk" id="procLnk">Ver detalle</span></div>`;
+    host.appendChild(div); div.querySelector("#procLnk").onclick=()=>openModal("procOverlay"); }
+  if(!pairs.length&&items.length){ const div=document.createElement("div"); div.className="banner ok";
+    const dias=new Set(); items.forEach(it=>it.m.forEach(([d])=>dias.add(d)));
+    div.innerHTML=`<span>✅</span><div><b>Horario sin topes</b>${state.sel.length} ramos${state.custom.length?` + ${state.custom.length} ayudantía(s)`:""} · ${total} créditos · ${dias.size} día(s) en el campus.</div>`; host.appendChild(div); }
+}
+function totalCredits(){ const codes=new Set(state.sel.map(id=>getSec(id).c)); let t=0; codes.forEach(c=>t+=creditsFor(c)); return t; }
+function renderCredits(){ const total=totalCredits();
+  document.getElementById("credNum").textContent=total;
+  document.getElementById("credMax").textContent=state.overload?"∞":"30";
+  const box=document.getElementById("creditsBox"); box.classList.remove("warn","bad");
+  if(!state.overload&&total>30) box.classList.add("bad"); else if(total>=28) box.classList.add("warn");
+}
+function toggle(id){ const i=state.sel.indexOf(id); if(i>=0) state.sel.splice(i,1); else { state.sel.push(id); justAddedId=id; } save(); renderAll(); justAddedId=null; }
+function renderAll(){ renderFilters(); renderQuickSelect(); renderCatalog(); renderGrid(); renderSelection(); renderAlerts(); renderCredits(); renderReco(); }
+
+/* ============ SELECCIÓN RÁPIDA POR SECCIÓN ============ */
+function catLabel(cat){ const c=CATS.find(x=>x.id===cat); return c?c.label:cat; }
+function sectionLettersFor(cat){ const set=new Set(); subjectsByCat(cat).forEach(code=>sectionsOf(code).forEach(x=>{ if(/^[A-D]$/.test(x.s)) set.add(x.s); })); return [...set].sort(); }
+function renderQuickSelect(){
+  const host=document.getElementById("quickSelect"); const cat=state.filter;
+  if(cat==="todos"){ host.innerHTML='<span class="qs-hint">💡 Elige un año arriba para poder tomar una sección completa (A/B/C…) de una sola vez.</span>'; return; }
+  const letters=sectionLettersFor(cat);
+  if(!letters.length){ host.innerHTML=""; return; }
+  host.innerHTML=`<span class="qs-label">Tomar sección completa:</span>`+letters.map(l=>`<button class="qs-btn" data-l="${l}">Sección ${l}</button>`).join("")+`<button class="qs-btn clear" data-clear="1">Quitar año</button>`;
+  host.querySelectorAll("[data-l]").forEach(b=>b.onclick=()=>selectWholeSection(cat,b.dataset.l));
+  host.querySelector("[data-clear]").onclick=()=>clearYear(cat);
+}
+function selectWholeSection(cat,letter){
+  const codes=subjectsByCat(cat); let added=0; const skipped=[];
+  codes.forEach(code=>{ const secs=sectionsOf(code); let target=secs.find(x=>x.s===letter); if(!target&&secs.length===1) target=secs[0];
+    if(target){ state.sel=state.sel.filter(id=>getSec(id).c!==code); state.sel.push(secId(target)); added++; } else skipped.push(baseName[code]); });
+  save(); renderAll();
+  let msg=`Sección ${letter} de ${catLabel(cat)}: ${added} ramo(s) agregado(s).`;
+  if(skipped.length) msg+=` Elige a mano: ${skipped.join(", ")}.`;
+  showToast(msg);
+}
+function clearYear(cat){ const codes=new Set(subjectsByCat(cat)); const before=state.sel.length; state.sel=state.sel.filter(id=>!codes.has(getSec(id).c)); save(); renderAll(); showToast(`Se quitaron ${before-state.sel.length} ramo(s) de ${catLabel(cat)}.`); }
+function showToast(msg){ const t=document.getElementById("toast"); t.textContent=msg; t.classList.add("show"); clearTimeout(t._t); t._t=setTimeout(()=>t.classList.remove("show"),4000); }
+
+/* ============ BIENVENIDA / TUTORIAL ============ */
+const WELCOME=[
+ {ic:"🎓",t:"¡Hola! Bienvenido a Toma de Ramos",x:"Esta app te ayuda a armar tu horario del <b>2.º semestre 2026</b> de Ingeniería en Negocios Internacionales (UV Viña del Mar) <b>sin choques de horario</b>.<br><br>Te voy a llevar de la mano, paso a paso. Toca <b>«Siguiente»</b> para empezar."},
+ {ic:"📅",t:"Paso 1 · Elige tu año",x:"Mira el panel <b>«Catálogo de asignaturas»</b> (a la izquierda; en el celular, arriba).<br><br>Toca el año que estás cursando: <b>1.º, 2.º, 3.º, 4.º o 5.º año</b>.<br><br>👉 Si vas a repetir un ramo de otro semestre, usa el botón <b>«Repitencia»</b>."},
+ {ic:"⚡",t:"Paso 2 · La forma rápida (recomendada)",x:"Si <b>ya sabes tu sección</b>, justo debajo de los años verás:<br><br><b>«Tomar sección completa: Sección A · B · C»</b><br><br>Toca tu letra y se cargan <b>todos los ramos de ese año</b> de una sola vez. ¡Listo en un clic!"},
+ {ic:"👆",t:"Paso 3 · O agrega ramo por ramo",x:"¿Prefieres elegir uno por uno?<br><br>1. Toca el <b>nombre de una asignatura</b> para desplegarla.<br>2. Verás sus secciones con <b>horario y profesor</b>.<br>3. Toca <b>«Agregar»</b> en la sección que quieras.<br><br>El botón se pone verde ✓ cuando ya la tomaste."},
+ {ic:"🚦",t:"Paso 4 · Revisa que no haya rojo",x:"Tu horario se arma al centro, en <b>«Horario semanal»</b>.<br><br>⛔ Si dos ramos chocan a la misma hora, el bloque se marca en <b>rojo</b> y aparece la alerta <b>«Tope de horario»</b>.<br><br>👉 Para quitar un ramo, toca la <b>×</b> en la esquina del bloque."},
+ {ic:"🔢",t:"Paso 5 · Cuida tus créditos",x:"Arriba a la derecha ves tu contador: <b>X / 30 créditos</b>.<br><br>El sistema oficial de la U <b>no deja inscribir más de 30</b>. Si te pasas, te aviso.<br><br>👉 Si tienes autorización de la Escuela, activa el interruptor <b>«Sobrecarga»</b>."},
+ {ic:"✨",t:"Paso 6 · ¿Te quedaron topes? Usa el Optimizador",x:"Toca <b>«✨ Optimizador»</b> arriba.<br><br>1. Marca los ramos que necesitas cursar.<br>2. Toca <b>«Buscar combinaciones sin tope»</b>.<br>3. Te propone qué secciones combinar <b>sin choques</b>, priorizando menos días y menos horas muertas.<br>4. Toca <b>«Aplicar»</b> y queda armado."},
+ {ic:"🎯",t:"Paso 7 · Marca lo que ya aprobaste",x:"Entra a <b>«🎓 Mi avance»</b> y marca los ramos que <b>ya aprobaste</b>.<br><br>Con eso la app te avisa 🔒 si intentas tomar un ramo cuyo <b>prerrequisito aún te falta</b>, y verás qué ramos te abre cada uno."},
+ {ic:"➕",t:"Paso 8 · Agrega tus ayudantías",x:"¿Tienes ayudantías, trabajo o algún compromiso fijo?<br><br>Toca <b>«➕ Ayudantía»</b>, ponle nombre, elige el <b>día y el/los bloques</b>, y aparecerá en tu horario.<br><br>Así el sistema evita que te choquen con tus clases."},
+ {ic:"🚌",t:"Paso 9 · Si viajas de otra comuna",x:"Toca <b>«🚌 Viaje»</b> y elige tu comuna (Quillota, Limache, Villa Alemana…).<br><br>Te calcula:<br>• <b>A qué hora salir</b> cada día<br>• <b>Cuánto gastas</b> al día y al mes<br>• Si te <b>conviene viajar o arrendar</b> cerca<br><br>⚠️ Es referencial: sal siempre con margen por imprevistos."},
+ {ic:"💾",t:"Paso 10 · Guarda y comparte",x:"<b>Todo se guarda solo</b> en tu navegador: si cierras y vuelves, tu horario sigue ahí.<br><br>Con <b>«⬇️ Exportar»</b> puedes bajarlo en <b>PDF, JPG o PNG</b> para mandarlo por WhatsApp.<br><br>En <b>«⚙️ Ajustes»</b> cambias a <b>modo oscuro</b>, color y tamaño de letra."},
+ {ic:"🚀",t:"¡Eso es todo! Resumen rápido",x:"<b>1.</b> Elige tu año<br><b>2.</b> Toma tu sección completa (o agrega ramo por ramo)<br><b>3.</b> Revisa que no haya bloques rojos<br><b>4.</b> Exporta tu horario<br><br>Puedes volver a ver este tutorial con el botón <b>«❓ Tutorial»</b>.<br><br>🧪 Esta es una <b>versión Beta</b>: si algo falla o se te ocurre una mejora, cuéntamelo con el botón <b>«💬 Feedback»</b>. ¡Tu opinión ayuda un montón!"}
+];
+let wlStep=0;
+function renderWelcome(i){ wlStep=i; const s=WELCOME[i];
+  document.getElementById("wlIc").textContent=s.ic;
+  document.getElementById("wlTitle").textContent=s.t;
+  document.getElementById("wlText").innerHTML=s.x;
+  document.getElementById("wlDots").innerHTML=WELCOME.map((_,k)=>`<span class="wl-dot${k===i?" on":""}"></span>`).join("");
+  document.getElementById("wlStepNum").textContent=`Paso ${i+1} de ${WELCOME.length}`;
+  document.getElementById("wlPrev").style.visibility=i===0?"hidden":"visible";
+  document.getElementById("wlNext").textContent=i===WELCOME.length-1?"¡Empezar! 🚀":"Siguiente →";
+  const ic=document.getElementById("wlIc"), tx=document.getElementById("wlText");
+  [ic,tx].forEach(el=>{ el.style.animation="none"; void el.offsetWidth; el.style.animation="wlFade .28s ease"; });
+}
+function startWelcome(){ renderWelcome(0); openModal("welcomeOverlay"); }
+function finishWelcome(){ state.onboarded=true; save(); closeModal("welcomeOverlay"); }
+
+/* ============ ANÁLISIS Y RECOMENDACIONES ============ */
+function dayBlocks(){ const days=[[],[],[],[],[]]; placedItems().forEach(it=>it.m.forEach(([d,b])=>{ if(!days[d].includes(b)) days[d].push(b); })); days.forEach(a=>a.sort((x,y)=>x-y)); return days; }
+function renderReco(){
+  const host=document.getElementById("recoHost");
+  const items=placedItems();
+  if(!items.length){ host.innerHTML=""; return; }
+  const days=dayBlocks();
+  // Franja por día
+  let strip='<div class="reco-strip">';
+  for(let d=0;d<5;d++){ const c=days[d].length; let lab,cls;
+    if(c===0){lab="Libre";cls="free";} else if(c>=5){lab="Muy cargado";cls="heavy2";} else if(c>=4){lab="Cargado";cls="heavy";} else if(c<=1){lab="Liviano";cls="light";} else {lab="Normal";cls="ok";}
+    strip+=`<div class="reco-day ${cls}"><b>${DIAS_CORTO[d]}</b><span>${c} bloque${c!==1?"s":""}</span><em>${lab}</em></div>`;
+  }
+  strip+='</div>';
+  // Recomendaciones
+  const recs=[];
+  const freeDays=[]; for(let d=0;d<5;d++) if(!days[d].length) freeDays.push(DIAS[d]);
+  const daysUsed=days.filter(a=>a.length).length;
+  const totalB=days.reduce((s,a)=>s+a.length,0);
+  recs.push(["info","📊",`<b>Resumen:</b> ${state.sel.length} ramo(s)${state.custom.length?` + ${state.custom.length} ayudantía(s)`:""} · ${totalCredits()} créditos · ${daysUsed} día(s) en el campus · ${totalB} bloques/semana (~${(totalB/(daysUsed||1)).toFixed(1)} por día).`]);
+  days.forEach((a,d)=>{ if(a.length>=5) recs.push(["bad","🔥",`<b>${DIAS[d]} muy cargado:</b> ${a.length} bloques ese día. Evalúa mover un ramo a otra sección (usa el optimizador).`]);
+    else if(a.length>=4) recs.push(["warn","⚠️",`<b>${DIAS[d]} cargado:</b> ${a.length} bloques. Llega con energía y lleva colación.`]); });
+  days.forEach((a,d)=>{ if(a.length===1) recs.push(["info","💡",`<b>${DIAS[d]}:</b> vas al campus por un solo bloque (${BLOQUES[a[0]-1].ini}). Si pudieras juntarlo con otro día, te ahorrarías un viaje.`]); });
+  days.forEach((a,d)=>{ if(a.length>=2){ const gaps=(a[a.length-1]-a[0]+1)-a.length;
+      if(gaps>=2) recs.push(["info","🕳️",`<b>${DIAS[d]}:</b> ${gaps} bloques libres entre clases (ventana larga). Ideal para estudiar o adelantar trabajos.`]);
+      else if(gaps===1) recs.push(["info","☕",`<b>${DIAS[d]}:</b> 1 bloque libre entre clases — buen respiro.`]); } });
+  days.forEach((a,d)=>{ if(a.length && (a[a.length-1]-a[0]+1)>=5) recs.push(["warn","⏳",`<b>${DIAS[d]}:</b> jornada muy larga (${BLOQUES[a[0]-1].ini}–${BLOQUES[a[a.length-1]-1].fin}).`]); });
+  const late=[]; days.forEach((a,d)=>{ if(a.includes(6)) late.push(DIAS_CORTO[d]); }); if(late.length>=2) recs.push(["info","🌙",`Sales tarde (18:40) ${late.length} días: ${late.join(", ")}.`]);
+  const early=[]; days.forEach((a,d)=>{ if(a.includes(1)) early.push(DIAS_CORTO[d]); }); if(early.length>=3) recs.push(["info","🌅",`Entras a las 08:30 ${early.length} días: ${early.join(", ")}. Cuida el sueño en la semana.`]);
+  if(freeDays.length) recs.push(["good","✅",`Tienes libre: <b>${freeDays.join(", ")}</b>. Aprovecha para descansar, trabajar o adelantar ramos.`]);
+  if(daysUsed<=3 && state.sel.length>=4) recs.push(["good","🎯",`Concentras tu carga en solo ${daysUsed} días — horario eficiente si viajas al campus.`]);
+  if(daysUsed===5) recs.push(["info","📅",`Usas los 5 días de la semana. Si quieres liberar uno, prueba el optimizador con otras secciones.`]);
+  // viaje
+  const td=travelData();
+  if(td && td.deps.length){ const v=rentVerdict(td.monthly);
+    const earliest=td.deps.reduce((m,x)=>x.salir<m?x.salir:m,"23:59");
+    recs.push([v.cls,"🚌",`<b>Viaje desde ${state.travel.origin}:</b> el día más temprano deberías salir ~<b>${earliest}</b>. Gasto estimado <b>~$${fmtCLP(td.monthly)}/mes</b>. ${v.short} <span class="lnk" id="travelLnk">Ver detalle y horas por día</span> · <span style="opacity:.75">solo referencial, sal con margen.</span>`]);
+  }
+  const cards=recs.map(([cls,ic,txt])=>`<div class="reco-card ${cls}"><span>${ic}</span><div>${txt}</div></div>`).join("");
+  host.innerHTML=`<h2>Análisis y recomendaciones</h2><div class="reco-body">${strip}${cards}</div>`;
+  const tl=document.getElementById("travelLnk"); if(tl) tl.onclick=()=>{ syncTravelUI(); openModal("travelOverlay"); renderTravelResult(); };
+}
+
+/* ============ VIAJE Y COSTOS ============ */
+function travelData(){
+  const t=state.travel; if(!t) return null;
+  const days=dayBlocks(); const classDays=[];
+  days.forEach((a,d)=>{ if(a.length) classDays.push({d,first:a[0],last:a[a.length-1]}); });
+  const deps=classDays.map(cd=>({ d:cd.d, salir:fmtHM(parseHM(BLOQUES[cd.first-1].ini)-(t.time+t.buffer)), clase:BLOQUES[cd.first-1].ini, vuelta:BLOQUES[cd.last-1].fin }));
+  const dailyCost=t.cost*t.trips, nDays=classDays.length, weekly=dailyCost*nDays, monthly=Math.round(weekly*4.3);
+  return {deps,dailyCost,nDays,weekly,monthly,t};
+}
+function rentVerdict(monthly){
+  if(monthly<=RENT_PIEZA*0.55) return {cls:"good", short:`Viajar se ve más conveniente que arrendar.`, txt:`Tu gasto mensual (~$${fmtCLP(monthly)}) es bastante menor que arrendar una pieza cerca de la U (~$${fmtCLP(RENT_PIEZA)}). <b>Viajar se ve conveniente.</b>`};
+  if(monthly<=RENT_PIEZA) return {cls:"warn", short:`Está en zona de evaluación vs. arrendar.`, txt:`Tu gasto mensual (~$${fmtCLP(monthly)}) se acerca al costo de una pieza cerca de la U (~$${fmtCLP(RENT_PIEZA)}). <b>Evalúa</b>: arrendar te ahorraría horas de viaje, aunque suma comida y servicios.`};
+  return {cls:"bad", short:`Podría convenirte arrendar cerca.`, txt:`Tu gasto mensual (~$${fmtCLP(monthly)}) supera el arriendo de una pieza (~$${fmtCLP(RENT_PIEZA)}) y se acerca a un departamento (~$${fmtCLP(RENT_DEPTO)}). <b>Podría convenirte arrendar cerca</b> del campus y ahorrar tiempo de viaje.`};
+}
+function syncTravelUI(){
+  const sel=document.getElementById("tvOrigin");
+  if(!sel.options.length){ Object.keys(ORIGENES).forEach(o=>{ const op=document.createElement("option"); op.value=o; op.textContent=o; sel.appendChild(op); }); }
+  const t=state.travel;
+  if(t){ sel.value=t.origin; document.getElementById("tvAddr").value=t.addr||""; document.getElementById("tvTime").value=t.time; document.getElementById("tvCost").value=t.cost; document.getElementById("tvTrips").value=t.trips; document.getElementById("tvBuffer").value=t.buffer; }
+  else { applyOriginDefaults(); }
+}
+function applyOriginDefaults(){
+  const o=document.getElementById("tvOrigin").value; const d=ORIGENES[o]||ORIGENES["Otro"];
+  document.getElementById("tvTime").value=d.t; document.getElementById("tvCost").value=d.c;
+  document.getElementById("tvAddr").value=(o==="Otro"?"":o);
+}
+function saveTravelFromUI(){
+  state.travel={ origin:document.getElementById("tvOrigin").value, addr:document.getElementById("tvAddr").value.trim()||document.getElementById("tvOrigin").value,
+    time:+document.getElementById("tvTime").value||45, cost:+document.getElementById("tvCost").value||0,
+    trips:+document.getElementById("tvTrips").value||2, buffer:+document.getElementById("tvBuffer").value||0 };
+  save();
+}
+function renderTravelResult(){
+  const host=document.getElementById("tvResult");
+  const t=state.travel; if(!t){ host.innerHTML='<div class="note-box">Elige tu comuna y pulsa <b>«Calcular recomendación»</b> para ver horas de salida y costos.</div>'; return; }
+  const td=travelData();
+  // Sección: hora de salida
+  let depHtml;
+  if(td.deps.length){
+    const rows=td.deps.map(x=>`<tr><td style="padding:5px 8px">${DIAS[x.d]}</td><td style="padding:5px 8px;font-weight:700">${x.salir}</td><td style="padding:5px 8px;color:var(--muted)">entras ${x.clase} · sales ${x.vuelta}</td></tr>`).join("");
+    depHtml=`<h4 style="font-size:.82rem;color:var(--muted);text-transform:uppercase;letter-spacing:.5px;margin:6px 0 6px">Hora sugerida de salida</h4>
+      <table style="width:100%;border-collapse:collapse;font-size:.85rem;border:1px solid var(--line);border-radius:8px;overflow:hidden">${rows}</table>
+      <p class="muted" style="font-size:.78rem;margin:6px 0 14px">Calculado como: hora de tu primera clase − (${t.time} min de viaje + ${t.buffer} min de margen). <b>Sal antes si hay lluvia, paros o tacos.</b></p>`;
+  } else {
+    depHtml=`<div class="note-box" style="margin:0 0 14px">🗓️ Agrega ramos a tu horario y aquí verás <b>a qué hora salir cada día</b> según tu primera clase.</div>`;
+  }
+  // Sección: costos (siempre, aunque no haya ramos)
+  const projDays=td.nDays||5; const assumed=td.nDays===0;
+  const weekly=td.dailyCost*projDays; const monthly=Math.round(weekly*4.3);
+  const v=rentVerdict(monthly);
+  host.innerHTML=`
+    <div class="note-box" style="margin:0 0 12px">📍 <b>Destino:</b> Universidad de Valparaíso · ${UNIV_ADDR.replace(", Chile","")}</div>
+    ${depHtml}
+    <h4 style="font-size:.82rem;color:var(--muted);text-transform:uppercase;letter-spacing:.5px;margin:0 0 6px">Costo estimado</h4>
+    <div class="row-form" style="margin-bottom:8px">
+      <div class="note-box"><b>Por día:</b> $${fmtCLP(td.dailyCost)} <span class="muted">(${t.trips} pasajes)</span></div>
+      <div class="note-box"><b>Por semana:</b> $${fmtCLP(weekly)} <span class="muted">(${projDays} día(s)${assumed?" estimados":" con clases"})</span></div>
+      <div class="note-box full"><b>Al mes:</b> ~$${fmtCLP(monthly)} <span class="muted">(≈ ${projDays} días × 4,3 semanas)${assumed?" — asumiendo 5 días/semana; agrega tus ramos para exactitud":""}</span></div>
+    </div>
+    <div class="banner ${v.cls}" style="margin:0 0 6px"><span>${v.cls==="good"?"✅":(v.cls==="warn"?"⚖️":"🏠")}</span><div><b>¿Viajar o arrendar?</b>${v.txt}</div></div>
+    <p class="muted" style="font-size:.76rem">Referencias de arriendo cerca de la UV: pieza ~$${fmtCLP(RENT_PIEZA)}, departamento ~$${fmtCLP(RENT_DEPTO)}. Arrendar suma comida y servicios, pero ahorra horas de viaje y desgaste. Decisión final tuya.</p>`;
+}
+function openMaps(){
+  const o=encodeURIComponent((document.getElementById("tvAddr").value||document.getElementById("tvOrigin").value)+", Región de Valparaíso, Chile");
+  const dest=encodeURIComponent(UNIV_ADDR);
+  window.open(`https://www.google.com/maps/dir/?api=1&origin=${o}&destination=${dest}&travelmode=transit`,"_blank");
+}
+
+/* ============ OPTIMIZADOR ============ */
+function openOptimizer(){
+  const host=document.getElementById("optSubjects");
+  const pre=new Set(state.sel.map(id=>getSec(id).c));
+  let codes; if(state.filter==="todos"){ codes=[]; SECCIONES.forEach(x=>{if(!codes.includes(x.c))codes.push(x.c);}); } else codes=subjectsByCat(state.filter);
+  pre.forEach(c=>{ if(!codes.includes(c)) codes.push(c); });
+  host.innerHTML="";
+  codes.forEach(code=>{ const secs=sectionsOf(code); const checked=pre.has(code)?"checked":"";
+    let opts='<option value="">Cualquier sección</option>'; secs.forEach(x=>opts+=`<option value="${secId(x)}">Secc. ${x.s} (${whenText(x.m)})</option>`);
+    const div=document.createElement("div"); div.className="opt-s";
+    div.innerHTML=`<input type="checkbox" data-code="${code}" ${checked}>
+      <div class="oi"><b>${code} · ${baseName[code]}</b><span>${secs.length} sección(es)</span></div>
+      ${secs.length>1?`<select data-fix="${code}">${opts}</select>`:""}`;
+    host.appendChild(div);
+  });
+  document.getElementById("optResults").innerHTML=""; openModal("optOverlay");
+}
+function runOptimizer(){
+  const host=document.getElementById("optSubjects");
+  const chosen=[...host.querySelectorAll("input[type=checkbox]:checked")].map(c=>c.getAttribute("data-code"));
+  const fixes={}; host.querySelectorAll("select[data-fix]").forEach(sel=>{ if(sel.value) fixes[sel.getAttribute("data-fix")]=sel.value; });
+  const out=document.getElementById("optResults");
+  if(chosen.length<2){ out.innerHTML='<p class="muted">Marca al menos 2 asignaturas.</p>'; return; }
+  const ayuM=state.custom.flatMap(cu=>cu.blocks.map(b=>[cu.day,b])); // respetar ayudantías
+  const groups=chosen.map(code=> fixes[code]?[getSec(fixes[code])]:sectionsOf(code));
+  const sols=[]; const CAP=400;
+  const overlap=(a,b)=>{ for(const [d,x] of a.m) for(const [e,y] of b.m) if(d===e&&x===y) return true; return false; };
+  const hitsAyu=x=>{ for(const [d,b] of x.m) for(const [d2,b2] of ayuM) if(d===d2&&b===b2) return true; return false; };
+  function dfs(i,acc){ if(sols.length>=CAP) return; if(i===groups.length){ sols.push(acc.slice()); return; }
+    for(const cand of groups[i]){ if(hitsAyu(cand)) continue; let ok=true; for(const p of acc){ if(overlap(p,cand)){ok=false;break;} } if(ok){ acc.push(cand); dfs(i+1,acc); acc.pop(); } } }
+  dfs(0,[]);
+  if(!sols.length){ out.innerHTML='<div class="banner bad" style="margin:8px 0"><span>⛔</span><div><b>No hay combinación sin topes</b>Prueba liberar secciones fijadas, quitar una asignatura muy conflictiva o revisar tus ayudantías.</div></div>'; return; }
+  function metrics(s){ const days=new Set(); const per={}; s.forEach(x=>x.m.forEach(([d,b])=>{days.add(d);(per[d]=per[d]||[]).push(b);}));
+    let gaps=0; Object.values(per).forEach(a=>{a.sort((x,y)=>x-y); gaps+=(a[a.length-1]-a[0]+1)-a.length;}); return {d:days.size,g:gaps}; }
+  sols.forEach(s=>{const mm=metrics(s); s._d=mm.d; s._g=mm.g;}); sols.sort((a,b)=>a._d-b._d||a._g-b._g);
+  const top=sols.slice(0,8);
+  out.innerHTML=`<p class="muted" style="margin:10px 0 6px">${sols.length}${sols.length>=CAP?"+":""} combinación(es) sin tope. Mostrando las ${top.length} más compactas:</p>`;
+  top.forEach((sol,idx)=>{ const card=document.createElement("div"); card.className="res-card";
+    const tags=sol.map(x=>{const c=evColors(x.c);return `<span class="res-tag" style="border-color:${c.bd}">${x.c}·${x.s}</span>`;}).join("");
+    card.innerHTML=`<div class="rh"><b>Opción ${idx+1}</b><span class="muted">${sol._d} día(s) · ${sol._g} hueco(s)</span></div><div class="res-tags">${tags}</div>`;
+    const btn=document.createElement("button"); btn.className="apply-btn"; btn.style.marginTop="10px"; btn.textContent="Aplicar esta combinación";
+    btn.onclick=()=>{ const keep=state.sel.filter(id=>!chosen.includes(getSec(id).c)); state.sel=keep.concat(sol.map(secId)); save(); renderAll(); closeModal("optOverlay"); };
+    card.appendChild(btn); out.appendChild(card);
+  });
+}
+
+/* ============ AYUDANTÍAS ============ */
+function renderAyuBlocks(){ const host=document.getElementById("ayuBlocks"); host.innerHTML="";
+  BLOQUES.forEach(bl=>{ const l=document.createElement("label"); l.innerHTML=`<input type="checkbox" value="${bl.n}"> ${bl.n} · ${bl.ini}`; host.appendChild(l); }); }
+function saveAyu(){
+  const name=document.getElementById("ayuName").value.trim();
+  const day=+document.getElementById("ayuDay").value;
+  const blocks=[...document.querySelectorAll("#ayuBlocks input:checked")].map(c=>+c.value);
+  if(!name){ alert("Ponle un nombre a la ayudantía."); return; }
+  if(!blocks.length){ alert("Selecciona al menos un bloque."); return; }
+  state.custom.push({ id:"AYU-"+Date.now(), name, day, blocks, prof:document.getElementById("ayuProf").value.trim(), room:document.getElementById("ayuRoom").value.trim(), color:document.getElementById("ayuColor").value });
+  document.getElementById("ayuName").value=""; document.getElementById("ayuProf").value=""; document.getElementById("ayuRoom").value="";
+  document.querySelectorAll("#ayuBlocks input:checked").forEach(c=>c.checked=false);
+  save(); renderAll(); renderAyuList();
+}
+function removeCustom(id){ state.custom=state.custom.filter(c=>c.id!==id); save(); renderAll(); renderAyuList(); }
+function renderAyuList(){ const host=document.getElementById("ayuList"); if(!state.custom.length){ host.innerHTML='<p class="muted" style="font-size:.8rem">No has agregado ayudantías.</p>'; return; }
+  host.innerHTML='<h4 style="font-size:.8rem;color:var(--muted);margin:0 0 6px">Ayudantías agregadas</h4>';
+  state.custom.forEach(cu=>{ const d=document.createElement("div"); d.className="sel-item";
+    d.innerHTML=`<span class="sd" style="background:${cu.color}"></span><div class="st"><b>${cu.name}</b><span>${DIAS[cu.day]} · ${cu.blocks.map(b=>BLOQUES[b-1].ini).join(", ")}${cu.prof?' · '+cu.prof:''}</span></div>`;
+    const rm=document.createElement("button"); rm.className="rm"; rm.textContent="Quitar"; rm.onclick=()=>removeCustom(cu.id); d.appendChild(rm); host.appendChild(d);
+  }); }
+
+/* ============ MI AVANCE (malla) ============ */
+function renderMalla(){
+  const host=document.getElementById("mallaHost"); host.innerHTML="";
+  const byYear={}; Object.values(COURSES).forEach(c=>{ (byYear[c.year]=byYear[c.year]||[]).push(c); });
+  Object.keys(byYear).sort().forEach(y=>{
+    const list=byYear[y].sort((a,b)=>a.code.localeCompare(b.code));
+    const wrap=document.createElement("div"); wrap.className="malla-year";
+    const yl=(y==="0")?"Otros / Electivos":`${y}.º año`;
+    wrap.innerHTML=`<div class="my-head"><h4>${yl}</h4><button class="mini-btn" data-y="${y}">Marcar/limpiar año</button></div>`;
+    const grid=document.createElement("div"); grid.className="malla-grid";
+    list.forEach(c=>{ const ok=state.approved.map(norm).includes(c.code);
+      const lab=document.createElement("label"); lab.className="mc"+(ok?" appr":"");
+      lab.innerHTML=`<input type="checkbox" ${ok?"checked":""}> <span>${c.code} · ${c.name}${CRED[norm(c.code)]!=null?` <b style="opacity:.7">(${CRED[norm(c.code)]} cr)</b>`:""}</span>`;
+      lab.querySelector("input").onchange=e=>{ toggleApproved(c.code,e.target.checked); lab.classList.toggle("appr",e.target.checked); };
+      grid.appendChild(lab);
+    });
+    wrap.appendChild(grid); host.appendChild(wrap);
+    wrap.querySelector("[data-y]").onclick=()=>{ const codes=list.map(c=>c.code); const allOn=codes.every(cc=>state.approved.map(norm).includes(cc));
+      codes.forEach(cc=>toggleApproved(cc,!allOn)); renderMalla(); renderAll(); };
+  });
+}
+function toggleApproved(code,on){ const c=norm(code); const set=new Set(state.approved.map(norm)); if(on) set.add(c); else set.delete(c); state.approved=[...set]; save(); }
+
+/* ============ EXPORTAR ============ */
+function exportJSON(){ const blob=new Blob([JSON.stringify(state,null,2)],{type:"application/json"}); const url=URL.createObjectURL(blob);
+  const a=document.createElement("a"); a.href=url; a.download="mi-horario-INI.json"; a.click(); URL.revokeObjectURL(url); }
+function importJSON(file){ const r=new FileReader(); r.onload=()=>{ try{ const d=JSON.parse(r.result); state=Object.assign({sel:[],credits:{},overload:false,filter:"2",custom:[],approved:[],settings:state.settings},d); save(); applySettings(); syncSettingsUI(); renderAll(); document.getElementById("overloadChk").checked=!!state.overload; }catch(e){ alert("Archivo inválido."); } }; r.readAsText(file); }
+
+function exportImage(type){
+  const items=placedItems();
+  const cmap=conflictMap(items);
+  const SC=2; // escala retina
+  const dark=isDark();
+  const W=1180, cols=6, timeW=110, dayW=(W-timeW)/5, rowH=96, headH=44;
+  const gridH=headH+rowH*6;
+  // resumen
+  const secs=items.filter(i=>i.kind==="sec"); const ayus=items.filter(i=>i.kind==="ayu");
+  const dias=new Set(); items.forEach(it=>it.m.forEach(([d])=>dias.add(d)));
+  const listRows=secs.length+ayus.length;
+  const sumTop=110, sumRowH=22, sumH=28+Math.ceil(listRows/2)*sumRowH+16;
+  const H=sumTop+gridH+sumH+24;
+  const cv=document.getElementById("exportCanvas"); cv.width=W*SC; cv.height=H*SC;
+  const g=cv.getContext("2d"); g.scale(SC,SC);
+  const bg=dark?"#0f1523":"#ffffff", ink=dark?"#e7ecf5":"#1c2433", mut=dark?"#9aa6bd":"#5b6678", line=dark?"#28324a":"#e2e7f0", fieldbg=dark?"#171f31":"#f7f9fe";
+  g.fillStyle=bg; g.fillRect(0,0,W,H);
+  // encabezado
+  g.fillStyle=state.settings.accent; g.fillRect(0,0,W,70);
+  g.fillStyle="#fff"; g.font="bold 22px system-ui,Arial"; g.fillText("🎓 Mi horario · 2.º Semestre 2026",24,32);
+  g.font="13px system-ui,Arial"; g.fillStyle="rgba(255,255,255,.9)"; g.fillText("Ingeniería en Negocios Internacionales — UV Viña del Mar",24,52);
+  g.textAlign="right"; g.font="bold 14px system-ui,Arial"; g.fillStyle="#fff";
+  g.fillText(`${totalCredits()} créditos · ${secs.length} ramos · ${dias.size} día(s)`, W-24, 42); g.textAlign="left";
+  // grilla
+  const gy=sumTop;
+  g.fillStyle=fieldbg; g.fillRect(0,gy,W,headH);
+  g.strokeStyle=line; g.lineWidth=1; g.font="bold 13px system-ui,Arial"; g.textBaseline="middle";
+  g.fillStyle=mut; g.textAlign="center"; g.fillText("Bloque",timeW/2,gy+headH/2);
+  DIAS.forEach((d,i)=>g.fillText(d.toUpperCase(),timeW+dayW*i+dayW/2,gy+headH/2));
+  BLOQUES.forEach((bl,bi)=>{ const y=gy+headH+rowH*bi;
+    g.fillStyle=fieldbg; g.fillRect(0,y,timeW,rowH); g.fillStyle=ink; g.font="bold 15px system-ui,Arial"; g.textAlign="center"; g.fillText(bl.n,timeW/2,y+20);
+    g.fillStyle=mut; g.font="11px system-ui,Arial"; g.fillText(bl.ini,timeW/2,y+40); g.fillText(bl.fin,timeW/2,y+56);
+    for(let d=0;d<5;d++){ const x=timeW+dayW*d; g.strokeStyle=line; g.strokeRect(x,y,dayW,rowH);
+      const its=cmap[d+"-"+bl.n]||[];
+      if(its.length){ const eh=(rowH-6)/its.length;
+        its.forEach((it,k)=>{ const c=itemColors(it); const ex=x+3, ey=y+3+eh*k, ew=dayW-6, ehh=eh-2;
+          g.fillStyle=c.bg; roundRect(g,ex,ey,ew,ehh,5); g.fill();
+          g.fillStyle=c.bd; g.fillRect(ex,ey,3,ehh);
+          g.fillStyle=c.ink; g.textAlign="left"; g.font="bold 10px system-ui,Arial";
+          g.fillText(it.kind==="ayu"?"Ayudantía":(it.c+" · "+it.s), ex+7, ey+ (its.length>1?9:12));
+          g.font="11px system-ui,Arial"; wrapText(g,it.n,ex+7,ey+(its.length>1?22:28),ew-10,12, its.length>1?1:2);
+          if(its.length===1 && it.p){ g.font="9px system-ui,Arial"; g.globalAlpha=.82; g.fillText((it.kind==="ayu"?"":"Prof. ")+(it.p.length>30?it.p.slice(0,28)+"…":it.p), ex+7, ey+ehh-9); g.globalAlpha=1; }
+        });
+      }
+    }
+    g.strokeStyle=line; g.strokeRect(0,y,timeW,rowH);
+  });
+  // resumen inferior
+  let sy=gy+gridH+18; g.textAlign="left"; g.fillStyle=ink; g.font="bold 14px system-ui,Arial"; g.fillText("Ramos tomados",24,sy); sy+=20;
+  g.font="12px system-ui,Arial";
+  const entries=secs.map(it=>({c:itemColors(it),t:`${it.c} ${it.s} · ${it.n} — Prof. ${it.p}`}))
+    .concat(ayus.map(it=>({c:itemColors(it),t:`Ayudantía · ${it.n}${it.p?" — "+it.p:""}`})));
+  entries.forEach((e,i)=>{ const col=i%2, xx=24+col*(W-48)/2, yy=sy+Math.floor(i/2)*sumRowH;
+    g.fillStyle=e.c.bd; roundRect(g,xx,yy-9,11,11,3); g.fill();
+    g.fillStyle=ink; g.fillText(e.t.length>62?e.t.slice(0,60)+"…":e.t, xx+18, yy-1);
+  });
+  const url=cv.toDataURL(type==="jpg"?"image/jpeg":"image/png", 0.95);
+  const a=document.createElement("a"); a.href=url; a.download="mi-horario-INI."+(type==="jpg"?"jpg":"png"); a.click();
+}
+function roundRect(g,x,y,w,h,r){ g.beginPath(); g.moveTo(x+r,y); g.arcTo(x+w,y,x+w,y+h,r); g.arcTo(x+w,y+h,x,y+h,r); g.arcTo(x,y+h,x,y,r); g.arcTo(x,y,x+w,y,r); g.closePath(); }
+function wrapText(g,text,x,y,maxW,lh,maxLines){ const words=text.split(" "); let line="",ln=0;
+  for(let i=0;i<words.length;i++){ const test=line+words[i]+" "; if(g.measureText(test).width>maxW&&line){ g.fillText(line.trim(),x,y); line=words[i]+" "; y+=lh; ln++; if(ln>=maxLines){ return; } } else line=test; }
+  g.fillText(line.trim(),x,y);
+}
+
+/* ============ AJUSTES ============ */
+function applySettings(){
+  const s=state.settings;
+  let theme=s.theme; if(theme==="auto") theme=window.matchMedia("(prefers-color-scheme: dark)").matches?"dark":"light";
+  document.documentElement.setAttribute("data-theme",theme);
+  document.documentElement.style.setProperty("--accent",s.accent);
+  document.documentElement.style.setProperty("--accent-d",shade(s.accent,-0.28));
+  document.documentElement.style.setProperty("--accent-soft",hexToRgba(s.accent,theme==="dark"?0.24:0.12));
+  document.documentElement.style.fontSize=(s.font||14)+"px";
+}
+const ACCENTS=["#1f4bd8","#0d9488","#7c3aed","#e11d48","#177245","#b45309","#334155","#0284c7"];
+function syncSettingsUI(){
+  const s=state.settings;
+  document.querySelectorAll("#themeSeg button").forEach(b=>b.classList.toggle("active",b.dataset.theme===s.theme));
+  document.querySelectorAll("#fontSeg button").forEach(b=>b.classList.toggle("active",+b.dataset.font===s.font));
+  const sw=document.getElementById("accentSwatches"); sw.innerHTML="";
+  ACCENTS.forEach(col=>{ const d=document.createElement("div"); d.className="swatch"+(col.toLowerCase()===s.accent.toLowerCase()?" active":""); d.style.background=col;
+    d.onclick=()=>{ s.accent=col; document.getElementById("accentCustom").value=col; save(); applySettings(); syncSettingsUI(); renderAll(); }; sw.appendChild(d); });
+  document.getElementById("accentCustom").value=s.accent;
+  document.getElementById("colorBySubj").checked=s.colorBySubject;
+  document.getElementById("reqActiveChk").checked=s.reqActive;
+}
+
+/* ============ MODALES ============ */
+function openModal(id){ document.getElementById(id).classList.add("show"); }
+function closeModal(id){ document.getElementById(id).classList.remove("show"); }
+document.querySelectorAll("[data-close]").forEach(b=>b.onclick=()=>b.closest(".overlay").classList.remove("show"));
+document.querySelectorAll(".overlay").forEach(o=>o.addEventListener("click",e=>{ if(e.target===o) o.classList.remove("show"); }));
+
+/* ============ EVENTOS ============ */
+document.getElementById("searchBox").oninput=renderCatalog;
+document.getElementById("overloadChk").onchange=e=>{ state.overload=e.target.checked; save(); renderAlerts(); renderCredits(); };
+document.getElementById("btnOpt").onclick=openOptimizer;
+document.getElementById("btnOpt2").onclick=openOptimizer;
+document.getElementById("runOpt").onclick=runOptimizer;
+document.getElementById("btnProc").onclick=()=>openModal("procOverlay");
+document.getElementById("btnSettings").onclick=()=>{ syncSettingsUI(); openModal("setOverlay"); };
+document.getElementById("btnAvance").onclick=()=>{ renderMalla(); openModal("avOverlay"); };
+document.getElementById("btnAyu").onclick=()=>{ renderAyuList(); openModal("ayuOverlay"); };
+document.getElementById("ayuSave").onclick=saveAyu;
+document.getElementById("btnTravel").onclick=()=>{ syncTravelUI(); renderTravelResult(); openModal("travelOverlay"); };
+document.getElementById("btnHelp").onclick=startWelcome;
+document.getElementById("btnFeedback").onclick=()=>window.open(FEEDBACK_URL,"_blank","noopener");
+document.getElementById("wlNext").onclick=()=>{ if(wlStep<WELCOME.length-1) renderWelcome(wlStep+1); else finishWelcome(); };
+document.getElementById("wlPrev").onclick=()=>{ if(wlStep>0) renderWelcome(wlStep-1); };
+document.getElementById("wlSkip").onclick=finishWelcome;
+document.getElementById("tvOrigin").onchange=applyOriginDefaults;
+document.getElementById("tvCalc").onclick=()=>{ saveTravelFromUI(); renderTravelResult(); renderReco(); };
+document.getElementById("tvMaps").onclick=openMaps;
+document.getElementById("btnClear").onclick=()=>{ if(confirm("¿Borrar tu selección de ramos y ayudantías?")){ state.sel=[]; state.custom=[]; save(); renderAll(); } };
+// export dropdown
+const exMenu=document.getElementById("exportMenu");
+document.getElementById("btnExport").onclick=e=>{ e.stopPropagation(); exMenu.classList.toggle("show"); };
+document.addEventListener("click",()=>exMenu.classList.remove("show"));
+exMenu.addEventListener("click",e=>e.stopPropagation());
+exMenu.querySelectorAll("[data-exp]").forEach(b=>b.onclick=()=>{ exMenu.classList.remove("show"); const k=b.dataset.exp;
+  if(k==="pdf") window.print(); else if(k==="jpg") exportImage("jpg"); else if(k==="png") exportImage("png"); else if(k==="json") exportJSON(); else if(k==="import") document.getElementById("fileInput").click(); });
+document.getElementById("fileInput").onchange=e=>{ if(e.target.files[0]) importJSON(e.target.files[0]); };
+// settings controls
+document.querySelectorAll("#themeSeg button").forEach(b=>b.onclick=()=>{ state.settings.theme=b.dataset.theme; save(); applySettings(); syncSettingsUI(); renderAll(); });
+document.querySelectorAll("#fontSeg button").forEach(b=>b.onclick=()=>{ state.settings.font=+b.dataset.font; save(); applySettings(); syncSettingsUI(); });
+document.getElementById("accentCustom").oninput=e=>{ state.settings.accent=e.target.value; save(); applySettings(); syncSettingsUI(); renderAll(); };
+document.getElementById("colorBySubj").onchange=e=>{ state.settings.colorBySubject=e.target.checked; save(); renderAll(); };
+document.getElementById("reqActiveChk").onchange=e=>{ state.settings.reqActive=e.target.checked; save(); renderAll(); };
+window.matchMedia("(prefers-color-scheme: dark)").addEventListener("change",()=>{ if(state.settings.theme==="auto"){ applySettings(); renderAll(); } });
+
+/* ============ INIT ============ */
+load(); applySettings(); renderAyuBlocks();
+document.getElementById("overloadChk").checked=!!state.overload;
+syncSettingsUI();
+renderAll();
+if(!state.onboarded){ state.onboarded=true; save(); startWelcome(); }
+</script>
+</body>
+</html>
