@@ -24,11 +24,6 @@ Hecha por un estudiante, para estudiantes.
 - Esta app **no inscribe ramos**: la inscripción real se hace en el portal oficial de la UV.
 - Tu horario se guarda **solo en tu navegador** (nadie más lo ve).
 
-## Tecnología
-
-Un único archivo `index.html` autocontenido: HTML + CSS + JavaScript, **sin dependencias externas**.
-Funciona incluso sin internet una vez cargado.
-
 ## Feedback
 
 ¿Encontraste un error o se te ocurre una mejora?
