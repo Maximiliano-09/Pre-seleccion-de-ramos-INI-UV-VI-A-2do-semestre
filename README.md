@@ -1,4 +1,4 @@
-# 🎓 Toma de Ramos — Ingeniería en Negocios Internacionales (UV Viña del Mar)
+# Toma de Ramos — Ingeniería en Negocios Internacionales (UV Viña del Mar)
 
 Herramienta **no oficial** para armar tu horario del **2.º semestre 2026** sin topes de horario.
 Hecha por un estudiante, para estudiantes.
