@@ -7,16 +7,16 @@ Hecha por un estudiante, para estudiantes.
 
 ## ¿Qué hace?
 
-- 📚 **Catálogo completo**: 1.º a 5.º año + asignaturas de repitencia (92 secciones).
-- ⚡ **Toma una sección completa** (A/B/C) de tu año con un solo clic.
-- 🚦 **Detecta topes de horario** automáticamente y los marca en rojo.
-- 🔢 **Créditos oficiales** de la malla UV, con aviso del límite de 30 y opción de sobrecarga.
-- ✨ **Optimizador**: te propone qué secciones combinar para no tener choques.
-- 🎯 **Requisitos**: marca los ramos que aprobaste y te avisa si te falta un prerrequisito.
-- ➕ **Ayudantías**: agrega tus propios bloques.
-- 🚌 **Viaje y costos**: si viajas de otra comuna, calcula a qué hora salir, cuánto gastas al mes y si conviene arrendar.
-- 💾 **Exporta** tu horario a PDF, JPG o PNG.
-- 🌙 Modo oscuro, colores personalizables y **funciona en el celular**.
+-  **Catálogo completo**: 1.º a 5.º año + asignaturas de repitencia (92 secciones).
+-  **Toma una sección completa** (A/B/C) de tu año con un solo clic.
+-  **Detecta topes de horario** automáticamente y los marca en rojo.
+-  **Créditos oficiales** de la malla UV, con aviso del límite de 30 y opción de sobrecarga.
+-  **Optimizador**: te propone qué secciones combinar para no tener choques.
+-  **Requisitos**: marca los ramos que aprobaste y te avisa si te falta un prerrequisito.
+-  **Ayudantías**: agrega tus propios bloques.
+-  **Viaje y costos**: si viajas de otra comuna, calcula a qué hora salir, cuánto gastas al mes y si conviene arrendar.
+-  **Exporta** tu horario a PDF, JPG o PNG.
+-  Modo oscuro, colores personalizables y **funciona en el celular**.
 
 ## Notas importantes
 
